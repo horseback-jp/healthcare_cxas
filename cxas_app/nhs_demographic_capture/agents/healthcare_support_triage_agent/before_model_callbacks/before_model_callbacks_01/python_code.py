@@ -67,11 +67,11 @@ ESCALATION_MAP = {
 def before_model_callback(callback_context: CallbackContext, llm_request: LlmRequest) -> Optional[LlmResponse]:
     state = callback_context.state
 
-    # Session start fixed greeting
+    # Session start fixed greeting introducing Clara
     for part in callback_context.get_last_user_input():
         if part.text == "<event>session start</event>":
             greeting = (
-                "Hello, thank you for calling healthcare support. "
+                "Hello, my name is Clara. Thank you for calling healthcare support. "
                 "To make sure I help you correctly, are you calling for yourself today, "
                 "or on behalf of someone else?"
             )
