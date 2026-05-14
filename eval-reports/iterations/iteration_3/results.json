@@ -1,0 +1,107 @@
+{
+  "total": 9,
+  "passed": 0,
+  "sim_pass_rate": null,
+  "run_short": "213f5375",
+  "time_str": "2026-05-14 12:30:47",
+  "failures": {
+    "TOOL_MISSING": [
+      [
+        "scenario_1_adult_confused",
+        "expected set_reason_for_call, got set_reason_for_call. Called: [set_demographics, set_reason_for_call, transfer_call, end_session]"
+      ],
+      [
+        "scenario_1_adult_confused",
+        "expected set_reason_for_call, got set_reason_for_call. Called: [set_demographics, set_reason_for_call, transfer_call, end_session]"
+      ],
+      [
+        "scenario_1_adult_confused",
+        "expected , not found. Called: [set_demographics, set_reason_for_call]"
+      ]
+    ],
+    "EXPECTATION_FAIL": [
+      [
+        "scenario_2_adult_efficient",
+        "\"The agent must match the caller's efficient tone.\" \u2014 The user's tone is efficient and direct throughout the conversation (e"
+      ],
+      [
+        "scenario_2_adult_efficient",
+        "\"The agent must match the caller's efficient tone.\" \u2014 The user's tone is consistently efficient and direct, using short, factual state"
+      ],
+      [
+        "scenario_2_adult_efficient",
+        "\"The agent must match the caller's efficient tone.\" \u2014 The user's tone is efficient and direct, as seen in utterances like 'Myself"
+      ],
+      [
+        "scenario_3_child_escalation",
+        "\"The agent must capture both caller and patient demographics \" \u2014 The agent successfully identified that it was a third-party caller and captured "
+      ]
+    ],
+    "TEXT_MISMATCH": [
+      [
+        "scenario_3_child_escalation",
+        "sem_score=2"
+      ],
+      [
+        "scenario_3_child_escalation",
+        "sem_score=2"
+      ]
+    ]
+  },
+  "per_eval": {
+    "scenario_1_adult_confused": {
+      "pass": 0,
+      "total": 3,
+      "failures": [
+        [
+          "TOOL_MISSING",
+          "expected set_reason_for_call, got set_reason_for_call. Called: [set_demographics, set_reason_for_call, transfer_call, end_session]"
+        ],
+        [
+          "TOOL_MISSING",
+          "expected set_reason_for_call, got set_reason_for_call. Called: [set_demographics, set_reason_for_call, transfer_call, end_session]"
+        ],
+        [
+          "TOOL_MISSING",
+          "expected , not found. Called: [set_demographics, set_reason_for_call]"
+        ]
+      ]
+    },
+    "scenario_2_adult_efficient": {
+      "pass": 0,
+      "total": 3,
+      "failures": [
+        [
+          "EXPECTATION_FAIL",
+          "\"The agent must match the caller's efficient tone.\" \u2014 The user's tone is efficient and direct throughout the conversation (e"
+        ],
+        [
+          "EXPECTATION_FAIL",
+          "\"The agent must match the caller's efficient tone.\" \u2014 The user's tone is consistently efficient and direct, using short, factual state"
+        ],
+        [
+          "EXPECTATION_FAIL",
+          "\"The agent must match the caller's efficient tone.\" \u2014 The user's tone is efficient and direct, as seen in utterances like 'Myself"
+        ]
+      ]
+    },
+    "scenario_3_child_escalation": {
+      "pass": 0,
+      "total": 3,
+      "failures": [
+        [
+          "EXPECTATION_FAIL",
+          "\"The agent must capture both caller and patient demographics \" \u2014 The agent successfully identified that it was a third-party caller and captured "
+        ],
+        [
+          "TEXT_MISMATCH",
+          "sem_score=2"
+        ],
+        [
+          "TEXT_MISMATCH",
+          "sem_score=2"
+        ]
+      ]
+    }
+  }
+}

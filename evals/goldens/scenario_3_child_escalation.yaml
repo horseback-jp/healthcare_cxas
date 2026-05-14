@@ -1,0 +1,56 @@
+common_session_parameters:
+  is_third_party_caller: ""
+  caller_first_name: ""
+  caller_last_name: ""
+  patient_first_name: ""
+  patient_last_name: ""
+  patient_age: ""
+  patient_home_postcode: ""
+  reason_for_call: ""
+  _action_trigger: ""
+  api_failed: "false"
+  no_input_counter: "0"
+
+conversations:
+  - conversation: scenario_3_child_escalation
+    session_parameters: {}
+    turns:
+      - user: "<event>welcome</event>"
+        agent: "Hello, thank you for calling healthcare support. To make sure I help you correctly, are you calling for yourself today, or on behalf of someone else?"
+      - user: "I'm calling for my son, he's feeling really unwell."
+        agent: "I can certainly help get you to the right place. First, could I please have your first and last name?"
+        tool_calls:
+          - action: set_demographics
+            args:
+              is_third_party_caller: "true"
+      - user: "It's David Smith."
+        agent: "Thank you, David. And what is your son's first and last name, his age, and his home postcode?"
+        tool_calls:
+          - action: set_demographics
+            args:
+              caller_first_name: "David"
+              caller_last_name: "Smith"
+      - user: "His name is Leo Smith, he is 10 years old. Postcode is B1 2QA."
+        agent: "Thank you. Since you are calling about a child under 13, I am going to transfer you to a human specialist who can assist you immediately. Please hold the line."
+        tool_calls:
+          - action: set_demographics
+            args:
+              patient_first_name: "Leo"
+              patient_last_name: "Smith"
+              patient_age: 10
+              patient_home_postcode: "B1 2QA"
+          - action: transfer_call
+            args:
+              transfer_destination: "specialist"
+              summary:
+                $matchType: "ignore"
+                $matchValue: ""
+                $originalValue: ""
+          - action: end_session
+            args:
+              session_escalated: true
+    expectations:
+      - "The agent must capture both caller and patient demographics for third-party callers."
+      - "The agent must trigger immediate escalation when patient age is under 13."
+      - "The agent must gracefully end the automated portion of the call."
+    tags: [P0, NO-GO, escalation, child-third-party, scenario-3]

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Iteration 3 Report - 7dfa445b-21d4-4c61-b0f9-10e6bcfcb389</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    color: #333;
+  }
+  h1 {
+    color: #1a1a2e;
+    border-bottom: 3px solid #3f51b5;
+    padding-bottom: 10px;
+  }
+  h2 {
+    color: #1a1a2e;
+    margin-top: 30px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 6px;
+  }
+  .header-meta {
+    color: #666;
+    font-size: 0.9em;
+    margin: 4px 0 16px 0;
+  }
+  .section {
+    margin: 16px 0;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  th, td {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid #ddd;
+  }
+  th {
+    background: #2c3e50;
+    color: white;
+  }
+  details {
+    margin: 4px 0;
+  }
+  summary {
+    cursor: pointer;
+  }
+  pre {
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>Iteration 3</h1>
+<div class="header-meta">
+  App: <b>7dfa445b-21d4-4c61-b0f9-10e6bcfcb389</b> | Generated: 2026-05-14 13:34
+</div>
+
+<div style="background:#e8eaf6;padding:12px 16px;border-radius:6px;margin:12px 0;border-left:4px solid #3f51b5;"><b>Rationale:</b> Initial baseline</div>
+
+<h2>Summary</h2>
+<div class="section">
+
+    <div style="display:flex;gap:24px;align-items:center;margin:12px 0;">
+      <div style="font-size:2.2em;font-weight:bold;color:#e74c3c;">0%</div>
+      <div>
+        <b>0/9</b> evals passed<br>
+        <span style="color:#666;font-size:0.85em;">Run: 213f5375 | 2026-05-14 12:30:47</span>
+      </div>
+    </div>
+</div>
+
+<h2>Changes from Previous Iteration</h2>
+<div class="section">
+<p style="color:#888;">No changes detected (baseline iteration or identical files).</p>
+</div>
+
+<h2>Failure Triage</h2>
+<div class="section">
+<div style="background:#fff;border-left:4px solid #e74c3c;padding:10px 14px;margin:8px 0;border-radius:4px;"><b style="color:#c0392b;">EXPECTATION_FAIL</b> (4)<ul style="margin:4px 0 0 0;padding-left:20px;"><li><b>scenario_2_adult_efficient</b>: &quot;The agent must match the caller's efficient tone.&quot; — The user's tone is efficient and direct throughout the conversation (e</li><li><b>scenario_2_adult_efficient</b>: &quot;The agent must match the caller's efficient tone.&quot; — The user's tone is consistently efficient and direct, using short, factual state</li><li><b>scenario_2_adult_efficient</b>: &quot;The agent must match the caller's efficient tone.&quot; — The user's tone is efficient and direct, as seen in utterances like 'Myself</li><li><b>scenario_3_child_escalation</b>: &quot;The agent must capture both caller and patient demographics &quot; — The agent successfully identified that it was a third-party caller and captured </li></ul></div>
+<div style="background:#fff;border-left:4px solid #e74c3c;padding:10px 14px;margin:8px 0;border-radius:4px;"><b style="color:#c0392b;">TOOL_MISSING</b> (3)<ul style="margin:4px 0 0 0;padding-left:20px;"><li><b>scenario_1_adult_confused</b>: expected set_reason_for_call, got set_reason_for_call. Called: [set_demographics, set_reason_for_call, transfer_call, end_session]</li><li><b>scenario_1_adult_confused</b>: expected set_reason_for_call, got set_reason_for_call. Called: [set_demographics, set_reason_for_call, transfer_call, end_session]</li><li><b>scenario_1_adult_confused</b>: expected , not found. Called: [set_demographics, set_reason_for_call]</li></ul></div>
+<div style="background:#fff;border-left:4px solid #e74c3c;padding:10px 14px;margin:8px 0;border-radius:4px;"><b style="color:#c0392b;">TEXT_MISMATCH</b> (2)<ul style="margin:4px 0 0 0;padding-left:20px;"><li><b>scenario_3_child_escalation</b>: sem_score=2</li><li><b>scenario_3_child_escalation</b>: sem_score=2</li></ul></div>
+
+</div>
+
+<h2>Per-Eval Results</h2>
+<div class="section">
+<table style="border-collapse:collapse;width:100%;margin:10px 0;"><tr style="background:#2c3e50;color:white;"><th style="padding:8px 12px;text-align:left;">Eval</th><th style="padding:8px 12px;text-align:center;">Pass</th><th style="padding:8px 12px;text-align:center;">Total</th><th style="padding:8px 12px;text-align:center;">Rate</th><th style="padding:8px 12px;text-align:left;">Status</th></tr>
+<tr style="background:#fef5f5;"><td style="padding:8px 12px;">scenario_1_adult_confused</td><td style="padding:8px 12px;text-align:center;">0</td><td style="padding:8px 12px;text-align:center;">3</td><td style="padding:8px 12px;text-align:center;">0%</td><td style="padding:8px 12px;"><span style="color:#e74c3c;font-weight:bold;">FAIL</span></td></tr>
+<tr style="background:#fef5f5;"><td style="padding:8px 12px;">scenario_2_adult_efficient</td><td style="padding:8px 12px;text-align:center;">0</td><td style="padding:8px 12px;text-align:center;">3</td><td style="padding:8px 12px;text-align:center;">0%</td><td style="padding:8px 12px;"><span style="color:#e74c3c;font-weight:bold;">FAIL</span></td></tr>
+<tr style="background:#fef5f5;"><td style="padding:8px 12px;">scenario_3_child_escalation</td><td style="padding:8px 12px;text-align:center;">0</td><td style="padding:8px 12px;text-align:center;">3</td><td style="padding:8px 12px;text-align:center;">0%</td><td style="padding:8px 12px;"><span style="color:#e74c3c;font-weight:bold;">FAIL</span></td></tr>
+</table>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<title>Combined Eval Report - 2026-05-14 13:26</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 1100px; margin: 0 auto; padding: 20px; background: #f8f9fa; }
+  h1 { color: #1a1a2e; border-bottom: 3px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #1a1a2e; margin-top: 30px; }
+  .summary { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+  .summary-top { display: flex; gap: 24px; align-items: center; margin-bottom: 12px; }
+  .summary .big { font-size: 2em; font-weight: bold; }
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+  .summary-card { padding: 8px 12px; border-radius: 6px; background: #f8f9fa; text-align: center; }
+  .summary-card .label { font-size: 0.7em; text-transform: uppercase; letter-spacing: 1px; color: #888; }
+  .summary-card .value { font-size: 1.3em; font-weight: bold; margin-top: 2px; }
+  .mixed { color: #f57c00; }
+  .failure-group { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin: 15px 0; padding: 16px; }
+  .failure-group h3 { margin: 0 0 8px 0; color: #c0392b; font-size: 0.95em; }
+  .failure-group .affected { font-size: 0.85em; color: #555; margin: 4px 0; }
+  .failure-group .affected-item { display: inline-block; padding: 2px 8px; margin: 2px; border-radius: 4px; background: #fdecea; font-size: 0.8em; }
+  .pass { color: #27ae60; } .fail { color: #e74c3c; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+  th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid #ddd; }
+  th { background: #2c3e50; color: white; }
+  tr.clickable { cursor: pointer; }
+  tr.clickable:hover { background: #eef; }
+  .eval-card { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin: 15px 0; overflow: hidden; }
+  .eval-header { padding: 12px 16px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+  .eval-header.pass-bg { background: #d4edda; border-left: 4px solid #27ae60; }
+  .eval-header.fail-bg { background: #f8d7da; border-left: 4px solid #e74c3c; }
+  .eval-body { padding: 0 16px 16px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold; }
+  .badge.pass, .badge.met { background: #d4edda; color: #155724; }
+  .badge.fail, .badge.not-met { background: #f8d7da; color: #721c24; }
+  .badge.golden { background: #fff3e0; color: #e65100; }
+  .badge.sim { background: #e8eaf6; color: #283593; }
+  .badge.tool { background: #e0f2f1; color: #004d40; }
+  .badge.callback { background: #fce4ec; color: #880e4f; }
+  .meta { color: #666; font-size: 0.85em; }
+  details { margin: 4px 0; }
+  summary { cursor: pointer; font-weight: bold; padding: 4px 0; }
+  .run-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 3px; cursor: pointer; border: 2px solid transparent; transition: border-color 0.15s; }
+  .run-dot:hover { border-color: #333; }
+  .run-dot.p { background: #27ae60; } .run-dot.f { background: #e74c3c; }
+  .session-link { font-size: 0.85em; color: #3498db; margin: 4px 0; }
+  .session-link a { color: #3498db; text-decoration: none; }
+  .session-link a:hover { text-decoration: underline; }
+
+  /* Golden turn comparison */
+  .turn-row { margin: 6px 0; padding: 10px; background: #fafafa; border-radius: 6px; border-left: 3px solid #bbb; font-size: 0.85em; }
+  .turn-row.match { border-left-color: #27ae60; }
+  .turn-row.mismatch { border-left-color: #e74c3c; background: #fef5f5; }
+  .turn-header { font-weight: bold; margin-bottom: 4px; }
+  .comparison { margin: 4px 0; padding: 6px 8px; border-radius: 4px; }
+  .comparison.pass-bg { background: #edf7ed; }
+  .comparison.fail-bg { background: #fdecea; }
+  .comp-label { font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.5px; color: #888; }
+  .comp-text { margin-top: 2px; }
+  .sem-score { display: inline-block; padding: 1px 6px; border-radius: 8px; font-size: 0.75em; font-weight: bold; }
+  .sem-4 { background: #d4edda; color: #155724; }
+  .sem-3 { background: #d4edda; color: #155724; }
+  .sem-2 { background: #fff3cd; color: #856404; }
+  .sem-1 { background: #f8d7da; color: #721c24; }
+  .sem-0 { background: #f8d7da; color: #721c24; }
+
+  /* Sim styles */
+  .transcript { background: #f8f9fa; border-radius: 6px; padding: 12px; margin: 8px 0; font-size: 0.9em; }
+  .transcript .user { color: #2980b9; margin: 6px 0; }
+  .transcript .agent { color: #27ae60; margin: 6px 0; }
+  .transcript .system { color: #e67e22; margin: 4px 0; font-size: 0.85em; }
+  .expectation { margin: 6px 0; padding: 8px; background: #f0f0f0; border-radius: 4px; }
+  .step { margin: 6px 0; padding: 8px; border-left: 3px solid #3498db; background: #f0f8ff; }
+  .tool-details { margin: 4px 0; padding: 4px 8px; background: #f3e8ff; border-radius: 4px; border-left: 3px solid #8e44ad; }
+  .tool-summary { font-weight: normal; font-size: 0.9em; color: #6c3483; padding: 2px 0; }
+  .tool-data { margin: 4px 0; padding: 8px; background: #faf5ff; border-radius: 4px; font-size: 0.8em; white-space: pre-wrap; word-break: break-word; }
+  .tool-section { font-size: 0.85em; color: #555; margin-top: 6px; }
+  .controls { display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
+  .controls button { padding: 6px 14px; border: 1px solid #ccc; border-radius: 6px; background: white; cursor: pointer; font-size: 0.85em; transition: all 0.15s; }
+  .controls button:hover { background: #eee; }
+  .controls button.active { background: #2c3e50; color: white; border-color: #2c3e50; }
+  tr.hidden-row { display: none; }
+  .eval-card.hidden-card { display: none; }
+</style>
+<script>
+var failuresOnly = false;
+
+function jumpTo(evalName) {
+  var card = document.getElementById('eval-' + evalName);
+  if (!card) return;
+  var details = card.querySelectorAll('details.run-detail');
+  var opened = false;
+  details.forEach(function(d) {
+    if (!opened && d.dataset.failed === 'true') {
+      d.setAttribute('open', '');
+      opened = true;
+    } else {
+      d.removeAttribute('open');
+    }
+  });
+  if (!opened && details.length > 0) details[0].setAttribute('open', '');
+  setTimeout(function() { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+}
+
+function jumpToRun(evalName, runIdx) {
+  var card = document.getElementById('eval-' + evalName);
+  if (!card) return;
+  var details = card.querySelectorAll('details.run-detail');
+  details.forEach(function(d) { d.removeAttribute('open'); });
+  if (details[runIdx]) { details[runIdx].setAttribute('open', ''); }
+  setTimeout(function() { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+}
+
+function toggleFailures() {
+  failuresOnly = !failuresOnly;
+  var btn = document.getElementById('btn-failures');
+  btn.classList.toggle('active', failuresOnly);
+  // Table rows
+  document.querySelectorAll('tr[data-passed]').forEach(function(row) {
+    if (failuresOnly && row.dataset.passed === 'true') {
+      row.classList.add('hidden-row');
+    } else {
+      row.classList.remove('hidden-row');
+    }
+  });
+  // Detail cards
+  document.querySelectorAll('.eval-card[data-passed]').forEach(function(card) {
+    if (failuresOnly && card.dataset.passed === 'true') {
+      card.classList.add('hidden-card');
+    } else {
+      card.classList.remove('hidden-card');
+    }
+  });
+}
+
+function expandAll() {
+  document.querySelectorAll('details').forEach(function(d) { d.setAttribute('open', ''); });
+}
+
+function collapseAll() {
+  document.querySelectorAll('details').forEach(function(d) { d.removeAttribute('open'); });
+}
+</script>
+</head><body>
+<h1>Combined Eval Report</h1>
+<div class="summary">
+  <div class="summary-top">
+    <div class="big pass">100%</div>
+    <div><b>5/5</b> total passed<br><span class="meta">Generated 2026-05-14 13:26</span></div>
+  </div>
+  <div class="summary-grid"><div class="summary-card" onclick="document.getElementById('section-tools').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><div class="label">Tool Tests</div><div class="value pass">5/5</div></div>
+  </div>
+</div>
+
+<div class="controls">
+  <button id="btn-failures" onclick="toggleFailures()">Show Failures Only</button>
+  <button onclick="expandAll()">Expand All</button>
+  <button onclick="collapseAll()">Collapse All</button>
+</div>
+
+<h2>All Evals</h2>
+<table>
+  <tr><th>Result</th><th>Type</th><th>Eval</th><th>Detail</th></tr>
+  <tr class="clickable" data-passed="true" onclick="jumpTo('set_demographics_self')"><td><span class="pass"><b>PASSED</b></span></td><td><span class="badge tool">tool</span></td><td>set_demographics_self</td><td>1101ms</td></tr>
+  <tr class="clickable" data-passed="true" onclick="jumpTo('set_demographics_third_party')"><td><span class="pass"><b>PASSED</b></span></td><td><span class="badge tool">tool</span></td><td>set_demographics_third_party</td><td>1139ms</td></tr>
+  <tr class="clickable" data-passed="true" onclick="jumpTo('set_reason_for_call_success')"><td><span class="pass"><b>PASSED</b></span></td><td><span class="badge tool">tool</span></td><td>set_reason_for_call_success</td><td>1216ms</td></tr>
+  <tr class="clickable" data-passed="true" onclick="jumpTo('set_session_state_success')"><td><span class="pass"><b>PASSED</b></span></td><td><span class="badge tool">tool</span></td><td>set_session_state_success</td><td>2637ms</td></tr>
+  <tr class="clickable" data-passed="true" onclick="jumpTo('transfer_call_triage')"><td><span class="pass"><b>PASSED</b></span></td><td><span class="badge tool">tool</span></td><td>transfer_call_triage</td><td>1378ms</td></tr>
+</table>
+<h2 id="section-tools">Tool Tests <span class="meta">(5/5 — 100%)</span></h2>
+<table><tr><th>Result</th><th>Tool</th><th>Test</th><th>Latency</th><th>Errors</th></tr>
+<tr data-passed="true"><td class="pass"><b>PASSED</b></td><td>set_session_state</td><td>set_session_state_success</td><td>2637ms</td><td></td></tr>
+<tr data-passed="true"><td class="pass"><b>PASSED</b></td><td>transfer_call</td><td>transfer_call_triage</td><td>1378ms</td><td></td></tr>
+<tr data-passed="true"><td class="pass"><b>PASSED</b></td><td>set_reason_for_call</td><td>set_reason_for_call_success</td><td>1216ms</td><td></td></tr>
+<tr data-passed="true"><td class="pass"><b>PASSED</b></td><td>set_demographics</td><td>set_demographics_self</td><td>1101ms</td><td></td></tr>
+<tr data-passed="true"><td class="pass"><b>PASSED</b></td><td>set_demographics</td><td>set_demographics_third_party</td><td>1139ms</td><td></td></tr>
+</table>
+</body></html>

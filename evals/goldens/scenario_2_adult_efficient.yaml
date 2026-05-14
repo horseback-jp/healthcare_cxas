@@ -1,0 +1,58 @@
+common_session_parameters:
+  is_third_party_caller: ""
+  caller_first_name: ""
+  caller_last_name: ""
+  patient_first_name: ""
+  patient_last_name: ""
+  patient_age: ""
+  patient_home_postcode: ""
+  reason_for_call: ""
+  _action_trigger: ""
+  api_failed: "false"
+  no_input_counter: "0"
+
+conversations:
+  - conversation: scenario_2_adult_efficient
+    session_parameters: {}
+    turns:
+      - user: "<event>welcome</event>"
+        agent: "Hello, thank you for calling healthcare support. To make sure I help you correctly, are you calling for yourself today, or on behalf of someone else?"
+      - user: "Myself. Look, my name is Mark Davies, I'm 28, I just need to speak to someone."
+        agent: "Understood, Mark. I just need your home postcode to complete your file, and then we will get you through."
+        tool_calls:
+          - action: set_demographics
+            args:
+              is_third_party_caller: "false"
+              patient_first_name: "Mark"
+              patient_last_name: "Davies"
+              patient_age: 28
+      - user: "M1 1AE."
+        agent: "Got it. Briefly, what is the reason for your call today?"
+        tool_calls:
+          - action: set_demographics
+            args:
+              patient_home_postcode: "M1 1AE"
+      - user: "I messed up my knee playing rugby this morning. It's swelling up."
+        agent: "Noted: knee injury from sports with swelling. I have all your details, Mark. Transferring you to the triage team now."
+        tool_calls:
+          - action: set_reason_for_call
+            args:
+              reason_for_call:
+                $matchType: "semantic"
+                $matchValue: "Knee injury from rugby with swelling"
+                $originalValue: ""
+          - action: transfer_call
+            args:
+              transfer_destination: "triage"
+              summary:
+                $matchType: "ignore"
+                $matchValue: ""
+                $originalValue: ""
+          - action: end_session
+            args:
+              session_escalated: true
+    expectations:
+      - "The agent must support out-of-order entity extraction when multiple details are provided."
+      - "The agent must match the caller's efficient tone."
+      - "The agent must transfer the call to the triage team after capturing reason for call."
+    tags: [P0, NO-GO, demographics, efficient, scenario-2]

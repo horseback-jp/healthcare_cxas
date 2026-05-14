@@ -1,0 +1,10 @@
+{
+    "name": "set_demographics",
+    "pythonFunction": {
+        "name": "set_demographics",
+        "pythonCode": "tools/set_demographics/python_function/python_code.py",
+        "description": "Captures demographic information during the call, including patient name, age, postcode, and caller name if calling on behalf of someone else. Also sets is_third_party_caller flag."
+    },
+    "executionType": "SYNCHRONOUS",
+    "displayName": "set_demographics"
+}

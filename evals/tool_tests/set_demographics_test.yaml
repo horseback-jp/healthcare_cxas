@@ -1,0 +1,43 @@
+tests:
+  - name: set_demographics_self
+    tool: set_demographics
+    args:
+      is_third_party_caller: "false"
+      patient_first_name: "Sarah"
+      patient_last_name: "Jenkins"
+      patient_age: 62
+      patient_home_postcode: "SW1A 1AA"
+    variables: {}
+    expectations:
+      response:
+        - path: "$.result.status"
+          operator: equals
+          value: "success"
+        - path: "$.result.captured_demographics.patient_first_name"
+          operator: equals
+          value: "Sarah"
+        - path: "$.result.captured_demographics.patient_age"
+          operator: equals
+          value: "62"
+  - name: set_demographics_third_party
+    tool: set_demographics
+    args:
+      is_third_party_caller: "true"
+      caller_first_name: "David"
+      caller_last_name: "Smith"
+      patient_first_name: "Leo"
+      patient_last_name: "Smith"
+      patient_age: 10
+      patient_home_postcode: "B1 2QA"
+    variables: {}
+    expectations:
+      response:
+        - path: "$.result.status"
+          operator: equals
+          value: "success"
+        - path: "$.result.captured_demographics.caller_first_name"
+          operator: equals
+          value: "David"
+        - path: "$.result.captured_demographics.patient_age"
+          operator: equals
+          value: "10"

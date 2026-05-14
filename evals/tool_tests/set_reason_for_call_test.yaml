@@ -1,0 +1,14 @@
+tests:
+  - name: set_reason_for_call_success
+    tool: set_reason_for_call
+    args:
+      reason_for_call: "Severe headache for 3 days"
+    variables: {}
+    expectations:
+      response:
+        - path: "$.result.status"
+          operator: equals
+          value: "success"
+        - path: "$.result.captured_reason"
+          operator: equals
+          value: "Severe headache for 3 days"

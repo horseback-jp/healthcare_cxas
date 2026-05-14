@@ -1,0 +1,61 @@
+{
+    "name": "nhs_demographic_capture",
+    "displayName": "[jph]nhsDemographicCapture",
+    "description": "Healthcare Support Triage Agent (Demo) for NHS Demographic Capture",
+    "rootAgent": "healthcare_support_triage_agent",
+    "tools": [
+        "set_session_state",
+        "set_demographics",
+        "set_reason_for_call",
+        "transfer_call"
+    ],
+    "modelSettings": {
+        "model": "gemini-3.1-flash-live"
+    },
+    "languageSettings": {
+        "defaultLanguageCode": "en-US"
+    },
+    "timeZoneSettings": {
+        "timeZone": "America/New_York"
+    },
+    "audioProcessingConfig": {
+        "synthesizeSpeechConfigs": {
+            "en-US": {
+                "speakingRate": 1.0
+            }
+        }
+    },
+    "defaultChannelProfile": {},
+    "loggingSettings": {
+        "conversationLoggingSettings": {},
+        "evaluationAudioRecordingConfig": {
+            "gcsBucket": "gs://your-audio-evals-bucket"
+        }
+    },
+    "toolExecutionMode": "PARALLEL",
+    "evaluationMetricsThresholds": {
+        "goldenEvaluationMetricsThresholds": {
+            "turnLevelMetricsThresholds": {
+                "semanticSimilaritySuccessThreshold": 3,
+                "overallToolInvocationCorrectnessThreshold": 1
+            },
+            "toolMatchingSettings": {
+                "extraToolCallBehavior": "ALLOW"
+            }
+        },
+        "goldenHallucinationMetricBehavior": "DISABLED"
+    },
+    "variableDeclarations": [
+        {"name": "is_third_party_caller", "description": "Boolean flag indicating if calling on behalf of someone else", "schema": {"type": "STRING", "default": ""}},
+        {"name": "caller_first_name", "description": "First name of the caller if third party", "schema": {"type": "STRING", "default": ""}},
+        {"name": "caller_last_name", "description": "Last name of the caller if third party", "schema": {"type": "STRING", "default": ""}},
+        {"name": "patient_first_name", "description": "First name of the patient", "schema": {"type": "STRING", "default": ""}},
+        {"name": "patient_last_name", "description": "Last name of the patient", "schema": {"type": "STRING", "default": ""}},
+        {"name": "patient_age", "description": "Age of the patient", "schema": {"type": "STRING", "default": ""}},
+        {"name": "patient_home_postcode", "description": "Home postcode of the patient", "schema": {"type": "STRING", "default": ""}},
+        {"name": "reason_for_call", "description": "Reason for call / primary symptom", "schema": {"type": "STRING", "default": ""}},
+        {"name": "_action_trigger", "description": "Internal trigger for deterministic callback actions", "schema": {"type": "STRING", "default": ""}},
+        {"name": "api_failed", "description": "Flag indicating API failure in callbacks", "schema": {"type": "STRING", "default": "false"}},
+        {"name": "no_input_counter", "description": "Consecutive silence/no-input count", "schema": {"type": "STRING", "default": "0"}}
+    ]
+}

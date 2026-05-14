@@ -1,0 +1,68 @@
+common_session_parameters:
+  is_third_party_caller: ""
+  caller_first_name: ""
+  caller_last_name: ""
+  patient_first_name: ""
+  patient_last_name: ""
+  patient_age: ""
+  patient_home_postcode: ""
+  reason_for_call: ""
+  _action_trigger: ""
+  api_failed: "false"
+  no_input_counter: "0"
+
+conversations:
+  - conversation: scenario_1_adult_confused
+    session_parameters: {}
+    turns:
+      - user: "<event>welcome</event>"
+        agent: "Hello, thank you for calling healthcare support. To make sure I help you correctly, are you calling for yourself today, or on behalf of someone else?"
+      - user: "Oh, hello. Yes, I'm just calling for myself."
+        agent: "Thank you. Could you please tell me your first and last name, your age, and your home postcode?"
+        tool_calls:
+          - action: set_demographics
+            args:
+              is_third_party_caller: "false"
+      - user: "My name is Sarah Jenkins. And my postcode is, um... oh dear, do you need the postcode or my age first? I always forget my glasses."
+        agent: "That's completely fine, please take your time, there is no rush at all. We can just take it one step at a time. Let's start with your age, how old are you, Sarah?"
+        tool_calls:
+          - action: set_demographics
+            args:
+              patient_first_name: "Sarah"
+              patient_last_name: "Jenkins"
+      - user: "Thank you, dear. I am 62 years old."
+        agent: "Perfect, thank you. And whenever you are ready, what is your home postcode?"
+        tool_calls:
+          - action: set_demographics
+            args:
+              patient_age: 62
+      - user: "It's SW1A 1AA."
+        agent: "Thank you for providing that, Sarah. Now, how can we help you today?"
+        tool_calls:
+          - action: set_demographics
+            args:
+              patient_home_postcode: "SW1A 1AA"
+      - user: "I've had this terrible headache that just won't go away. It's been with me for about three days now and I'm getting quite worried."
+        agent: "I'm sorry to hear you've been dealing with that headache for a few days, I know that can be very uncomfortable. I have noted down all your details and the reason for your call. I am now going to transfer you to our triage team who can speak with you further about this. Please hold the line."
+        tool_calls:
+          - action: set_reason_for_call
+            args:
+              reason_for_call:
+                $matchType: "semantic"
+                $matchValue: "Terrible headache for 3 days"
+                $originalValue: ""
+          - action: transfer_call
+            args:
+              transfer_destination: "triage"
+              summary:
+                $matchType: "ignore"
+                $matchValue: ""
+                $originalValue: ""
+          - action: end_session
+            args:
+              session_escalated: true
+    expectations:
+      - "The agent must extract demographics step-by-step when caller is confused."
+      - "The agent must show empathy and maintain a professional tone."
+      - "The agent must transfer the call to the triage team after capturing reason for call."
+    tags: [P0, NO-GO, demographics, adult-self, scenario-1]

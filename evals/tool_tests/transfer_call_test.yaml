@@ -1,0 +1,18 @@
+tests:
+  - name: transfer_call_triage
+    tool: transfer_call
+    args:
+      transfer_destination: "triage"
+      summary: "Demographics captured, headache"
+    variables: {}
+    expectations:
+      response:
+        - path: "$.result.status"
+          operator: equals
+          value: "success"
+        - path: "$.result.transfer_destination"
+          operator: equals
+          value: "triage"
+        - path: "$.result.summary"
+          operator: equals
+          value: "Demographics captured, headache"

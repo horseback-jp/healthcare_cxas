@@ -1,0 +1,10 @@
+{
+    "name": "set_reason_for_call",
+    "pythonFunction": {
+        "name": "set_reason_for_call",
+        "pythonCode": "tools/set_reason_for_call/python_function/python_code.py",
+        "description": "Captures the caller's primary reason for call or symptom description after clarifying vague statements."
+    },
+    "executionType": "SYNCHRONOUS",
+    "displayName": "set_reason_for_call"
+}

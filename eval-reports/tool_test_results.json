@@ -1,0 +1,47 @@
+[
+  {
+    "test_name":"set_session_state_success",
+    "tool":"set_session_state",
+    "status":"PASSED",
+    "latency (ms)":2241.2100000074,
+    "app_display_name":"[jph]nhsDemographicCapture",
+    "tester":"Unknown",
+    "errors":""
+  },
+  {
+    "test_name":"transfer_call_triage",
+    "tool":"transfer_call",
+    "status":"PASSED",
+    "latency (ms)":1156.9694579812,
+    "app_display_name":"[jph]nhsDemographicCapture",
+    "tester":"Unknown",
+    "errors":""
+  },
+  {
+    "test_name":"set_reason_for_call_success",
+    "tool":"set_reason_for_call",
+    "status":"PASSED",
+    "latency (ms)":1043.7339160126,
+    "app_display_name":"[jph]nhsDemographicCapture",
+    "tester":"Unknown",
+    "errors":""
+  },
+  {
+    "test_name":"set_demographics_self",
+    "tool":"set_demographics",
+    "status":"PASSED",
+    "latency (ms)":1085.6064999243,
+    "app_display_name":"[jph]nhsDemographicCapture",
+    "tester":"Unknown",
+    "errors":""
+  },
+  {
+    "test_name":"set_demographics_third_party",
+    "tool":"set_demographics",
+    "status":"PASSED",
+    "latency (ms)":1144.4722079905,
+    "app_display_name":"[jph]nhsDemographicCapture",
+    "tester":"Unknown",
+    "errors":""
+  }
+]

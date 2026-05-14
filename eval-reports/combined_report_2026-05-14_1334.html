@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<title>Combined Eval Report - 2026-05-14 13:34</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 1100px; margin: 0 auto; padding: 20px; background: #f8f9fa; }
+  h1 { color: #1a1a2e; border-bottom: 3px solid #e94560; padding-bottom: 10px; }
+  h2 { color: #1a1a2e; margin-top: 30px; }
+  .summary { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+  .summary-top { display: flex; gap: 24px; align-items: center; margin-bottom: 12px; }
+  .summary .big { font-size: 2em; font-weight: bold; }
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+  .summary-card { padding: 8px 12px; border-radius: 6px; background: #f8f9fa; text-align: center; }
+  .summary-card .label { font-size: 0.7em; text-transform: uppercase; letter-spacing: 1px; color: #888; }
+  .summary-card .value { font-size: 1.3em; font-weight: bold; margin-top: 2px; }
+  .mixed { color: #f57c00; }
+  .failure-group { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin: 15px 0; padding: 16px; }
+  .failure-group h3 { margin: 0 0 8px 0; color: #c0392b; font-size: 0.95em; }
+  .failure-group .affected { font-size: 0.85em; color: #555; margin: 4px 0; }
+  .failure-group .affected-item { display: inline-block; padding: 2px 8px; margin: 2px; border-radius: 4px; background: #fdecea; font-size: 0.8em; }
+  .pass { color: #27ae60; } .fail { color: #e74c3c; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+  th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid #ddd; }
+  th { background: #2c3e50; color: white; }
+  tr.clickable { cursor: pointer; }
+  tr.clickable:hover { background: #eef; }
+  .eval-card { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin: 15px 0; overflow: hidden; }
+  .eval-header { padding: 12px 16px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+  .eval-header.pass-bg { background: #d4edda; border-left: 4px solid #27ae60; }
+  .eval-header.fail-bg { background: #f8d7da; border-left: 4px solid #e74c3c; }
+  .eval-body { padding: 0 16px 16px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold; }
+  .badge.pass, .badge.met { background: #d4edda; color: #155724; }
+  .badge.fail, .badge.not-met { background: #f8d7da; color: #721c24; }
+  .badge.golden { background: #fff3e0; color: #e65100; }
+  .badge.sim { background: #e8eaf6; color: #283593; }
+  .badge.tool { background: #e0f2f1; color: #004d40; }
+  .badge.callback { background: #fce4ec; color: #880e4f; }
+  .meta { color: #666; font-size: 0.85em; }
+  details { margin: 4px 0; }
+  summary { cursor: pointer; font-weight: bold; padding: 4px 0; }
+  .run-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 3px; cursor: pointer; border: 2px solid transparent; transition: border-color 0.15s; }
+  .run-dot:hover { border-color: #333; }
+  .run-dot.p { background: #27ae60; } .run-dot.f { background: #e74c3c; }
+  .session-link { font-size: 0.85em; color: #3498db; margin: 4px 0; }
+  .session-link a { color: #3498db; text-decoration: none; }
+  .session-link a:hover { text-decoration: underline; }
+
+  /* Golden turn comparison */
+  .turn-row { margin: 6px 0; padding: 10px; background: #fafafa; border-radius: 6px; border-left: 3px solid #bbb; font-size: 0.85em; }
+  .turn-row.match { border-left-color: #27ae60; }
+  .turn-row.mismatch { border-left-color: #e74c3c; background: #fef5f5; }
+  .turn-header { font-weight: bold; margin-bottom: 4px; }
+  .comparison { margin: 4px 0; padding: 6px 8px; border-radius: 4px; }
+  .comparison.pass-bg { background: #edf7ed; }
+  .comparison.fail-bg { background: #fdecea; }
+  .comp-label { font-size: 0.75em; text-transform: uppercase; letter-spacing: 0.5px; color: #888; }
+  .comp-text { margin-top: 2px; }
+  .sem-score { display: inline-block; padding: 1px 6px; border-radius: 8px; font-size: 0.75em; font-weight: bold; }
+  .sem-4 { background: #d4edda; color: #155724; }
+  .sem-3 { background: #d4edda; color: #155724; }
+  .sem-2 { background: #fff3cd; color: #856404; }
+  .sem-1 { background: #f8d7da; color: #721c24; }
+  .sem-0 { background: #f8d7da; color: #721c24; }
+
+  /* Sim styles */
+  .transcript { background: #f8f9fa; border-radius: 6px; padding: 12px; margin: 8px 0; font-size: 0.9em; }
+  .transcript .user { color: #2980b9; margin: 6px 0; }
+  .transcript .agent { color: #27ae60; margin: 6px 0; }
+  .transcript .system { color: #e67e22; margin: 4px 0; font-size: 0.85em; }
+  .expectation { margin: 6px 0; padding: 8px; background: #f0f0f0; border-radius: 4px; }
+  .step { margin: 6px 0; padding: 8px; border-left: 3px solid #3498db; background: #f0f8ff; }
+  .tool-details { margin: 4px 0; padding: 4px 8px; background: #f3e8ff; border-radius: 4px; border-left: 3px solid #8e44ad; }
+  .tool-summary { font-weight: normal; font-size: 0.9em; color: #6c3483; padding: 2px 0; }
+  .tool-data { margin: 4px 0; padding: 8px; background: #faf5ff; border-radius: 4px; font-size: 0.8em; white-space: pre-wrap; word-break: break-word; }
+  .tool-section { font-size: 0.85em; color: #555; margin-top: 6px; }
+  .controls { display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
+  .controls button { padding: 6px 14px; border: 1px solid #ccc; border-radius: 6px; background: white; cursor: pointer; font-size: 0.85em; transition: all 0.15s; }
+  .controls button:hover { background: #eee; }
+  .controls button.active { background: #2c3e50; color: white; border-color: #2c3e50; }
+  tr.hidden-row { display: none; }
+  .eval-card.hidden-card { display: none; }
+</style>
+<script>
+var failuresOnly = false;
+
+function jumpTo(evalName) {
+  var card = document.getElementById('eval-' + evalName);
+  if (!card) return;
+  var details = card.querySelectorAll('details.run-detail');
+  var opened = false;
+  details.forEach(function(d) {
+    if (!opened && d.dataset.failed === 'true') {
+      d.setAttribute('open', '');
+      opened = true;
+    } else {
+      d.removeAttribute('open');
+    }
+  });
+  if (!opened && details.length > 0) details[0].setAttribute('open', '');
+  setTimeout(function() { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+}
+
+function jumpToRun(evalName, runIdx) {
+  var card = document.getElementById('eval-' + evalName);
+  if (!card) return;
+  var details = card.querySelectorAll('details.run-detail');
+  details.forEach(function(d) { d.removeAttribute('open'); });
+  if (details[runIdx]) { details[runIdx].setAttribute('open', ''); }
+  setTimeout(function() { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+}
+
+function toggleFailures() {
+  failuresOnly = !failuresOnly;
+  var btn = document.getElementById('btn-failures');
+  btn.classList.toggle('active', failuresOnly);
+  // Table rows
+  document.querySelectorAll('tr[data-passed]').forEach(function(row) {
+    if (failuresOnly && row.dataset.passed === 'true') {
+      row.classList.add('hidden-row');
+    } else {
+      row.classList.remove('hidden-row');
+    }
+  });
+  // Detail cards
+  document.querySelectorAll('.eval-card[data-passed]').forEach(function(card) {
+    if (failuresOnly && card.dataset.passed === 'true') {
+      card.classList.add('hidden-card');
+    } else {
+      card.classList.remove('hidden-card');
+    }
+  });
+}
+
+function expandAll() {
+  document.querySelectorAll('details').forEach(function(d) { d.setAttribute('open', ''); });
+}
+
+function collapseAll() {
+  document.querySelectorAll('details').forEach(function(d) { d.removeAttribute('open'); });
+}
+</script>
+</head><body>
+<h1>Combined Eval Report</h1>
+<div class="summary">
+  <div class="summary-top">
+    <div class="big fail">36%</div>
+    <div><b>5/14</b> total passed<br><span class="meta">Generated 2026-05-14 13:34</span></div>
+  </div>
+  <div class="summary-grid"><div class="summary-card" onclick="document.getElementById('section-goldens').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><div class="label">Goldens (text)</div><div class="value fail">0/9</div><br><span class='meta'>1.1m</span></div>
+<div class="summary-card" onclick="document.getElementById('section-tools').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><div class="label">Tool Tests</div><div class="value pass">5/5</div></div>
+  </div>
+</div>
+
+<div class="controls">
+  <button id="btn-failures" onclick="toggleFailures()">Show Failures Only</button>
+  <button onclick="expandAll()">Expand All</button>
+  <button onclick="collapseAll()">Collapse All</button>
+</div>
+
+<h2>All Evals</h2>
+<table>
+  <tr><th>Result</th><th>Type</th><th>Eval</th><th>Detail</th></tr>
+  <tr class="clickable" data-passed="false" onclick="jumpTo('scenario_1_adult_confused')"><td><span class="fail"><b>FAILED</b></span></td><td><span class="badge golden">golden</span></td><td>scenario_1_adult_confused</td><td>sem 3.3/4</td></tr>
+  <tr class="clickable" data-passed="false" onclick="jumpTo('scenario_1_adult_confused')"><td><span class="fail"><b>FAILED</b></span></td><td><span class="badge golden">golden</span></td><td>scenario_1_adult_confused</td><td>sem 3.7/4</td></tr>
+  <tr class="clickable" data-passed="false" onclick="jumpTo('scenario_1_adult_confused')"><td><span class="fail"><b>FAILED</b></span></td><td><span class="badge golden">golden</span></td><td>scenario_1_adult_confused</td><td>sem 3.3/4</td></tr>
+  <tr class="clickable" data-passed="false" onclick="jumpTo('scenario_2_adult_efficient')"><td><span class="fail"><b>FAILED</b></span></td><td><span class="badge golden">golden</span></td><td>scenario_2_adult_efficient</td><td>sem 3.5/4</td></tr>
+  <tr class="clickable" data-passed="false" onclick="jumpTo('scenario_2_adult_efficient')"><td><span class="fail"><b>FAILED</b></span></td><td><span class="badge golden">golden</span></td><td>scenario_2_adult_efficient</td><td>sem 4.0/4</td></tr>
+  <tr class="clickable" data-passed="false" onclick="jumpTo('scenario_2_adult_efficient')"><td><span class="fail"><b>FAILED</b></span></td><td><span class="badge golden">golden</span></td><td>scenario_2_adult_efficient</td><td>sem 4.0/4</td></tr>
+  <tr class="clickable" data-passed="false" onclick="jumpTo('scenario_3_child_escalation')"><td><span class="fail"><b>FAILED</b></span></td><td><span class="badge golden">golden</span></td><td>scenario_3_child_escalation</td><td>sem 3.5/4</td></tr>
+  <tr class="clickable" data-passed="false" onclick="jumpTo('scenario_3_child_escalation')"><td><span class="fail"><b>FAILED</b></span></td><td><span class="badge golden">golden</span></td><td>scenario_3_child_escalation</td><td>sem 3.5/4</td></tr>
+  <tr class="clickable" data-passed="false" onclick="jumpTo('scenario_3_child_escalation')"><td><span class="fail"><b>FAILED</b></span></td><td><span class="badge golden">golden</span></td><td>scenario_3_child_escalation</td><td>sem 2.8/4</td></tr>
+  <tr class="clickable" data-passed="true" onclick="jumpTo('set_demographics_self')"><td><span class="pass"><b>PASSED</b></span></td><td><span class="badge tool">tool</span></td><td>set_demographics_self</td><td>1086ms</td></tr>
+  <tr class="clickable" data-passed="true" onclick="jumpTo('set_demographics_third_party')"><td><span class="pass"><b>PASSED</b></span></td><td><span class="badge tool">tool</span></td><td>set_demographics_third_party</td><td>1144ms</td></tr>
+  <tr class="clickable" data-passed="true" onclick="jumpTo('set_reason_for_call_success')"><td><span class="pass"><b>PASSED</b></span></td><td><span class="badge tool">tool</span></td><td>set_reason_for_call_success</td><td>1044ms</td></tr>
+  <tr class="clickable" data-passed="true" onclick="jumpTo('set_session_state_success')"><td><span class="pass"><b>PASSED</b></span></td><td><span class="badge tool">tool</span></td><td>set_session_state_success</td><td>2241ms</td></tr>
+  <tr class="clickable" data-passed="true" onclick="jumpTo('transfer_call_triage')"><td><span class="pass"><b>PASSED</b></span></td><td><span class="badge tool">tool</span></td><td>transfer_call_triage</td><td>1157ms</td></tr>
+</table>
+
+<h2>Failure Patterns</h2>
+<div class="failure-group"><h3>Expectation not met: The agent must transfer the call to the triage team after capturing reason for c</h3><div class="affected">2 eval(s): <span class="affected-item" style="cursor:pointer" onclick="jumpTo('scenario_1_adult_confused')">scenario_1_adult_confused</span> <span class="affected-item" style="cursor:pointer" onclick="jumpTo('scenario_2_adult_efficient')">scenario_2_adult_efficient</span></div></div>
+<div class="failure-group"><h3>Expectation not met: The agent must capture both caller and patient demographics for third-party call</h3><div class="affected">1 eval(s): <span class="affected-item" style="cursor:pointer" onclick="jumpTo('scenario_3_child_escalation')">scenario_3_child_escalation</span></div></div>
+<div class="failure-group"><h3>Expectation not met: The agent must trigger immediate escalation when patient age is under 13.</h3><div class="affected">1 eval(s): <span class="affected-item" style="cursor:pointer" onclick="jumpTo('scenario_3_child_escalation')">scenario_3_child_escalation</span></div></div>
+<div class="failure-group"><h3>Expectation not met: The agent must gracefully end the automated portion of the call.</h3><div class="affected">1 eval(s): <span class="affected-item" style="cursor:pointer" onclick="jumpTo('scenario_3_child_escalation')">scenario_3_child_escalation</span></div></div>
+<div class="failure-group"><h3>Tool not called: set_demographics</h3><div class="affected">1 eval(s): <span class="affected-item" style="cursor:pointer" onclick="jumpTo('scenario_3_child_escalation')">scenario_3_child_escalation</span></div></div>
+<div class="failure-group"><h3>Expectation not met: The agent must extract demographics step-by-step when caller is confused.</h3><div class="affected">1 eval(s): <span class="affected-item" style="cursor:pointer" onclick="jumpTo('scenario_1_adult_confused')">scenario_1_adult_confused</span></div></div>
+<div class="failure-group"><h3>Expectation not met: The agent must show empathy and maintain a professional tone.</h3><div class="affected">1 eval(s): <span class="affected-item" style="cursor:pointer" onclick="jumpTo('scenario_1_adult_confused')">scenario_1_adult_confused</span></div></div>
+<div class="failure-group"><h3>Tool not called: transfer_call</h3><div class="affected">1 eval(s): <span class="affected-item" style="cursor:pointer" onclick="jumpTo('scenario_1_adult_confused')">scenario_1_adult_confused</span></div></div>
+<div class="failure-group"><h3>Tool not called: end_session</h3><div class="affected">1 eval(s): <span class="affected-item" style="cursor:pointer" onclick="jumpTo('scenario_1_adult_confused')">scenario_1_adult_confused</span></div></div>
+<div class="failure-group"><h3>Expectation not met: The agent must match the caller's efficient tone.</h3><div class="affected">1 eval(s): <span class="affected-item" style="cursor:pointer" onclick="jumpTo('scenario_2_adult_efficient')">scenario_2_adult_efficient</span></div></div>
+<div class="failure-group"><h3>Expectation not met: The agent must support out-of-order entity extraction when multiple details are </h3><div class="affected">1 eval(s): <span class="affected-item" style="cursor:pointer" onclick="jumpTo('scenario_2_adult_efficient')">scenario_2_adult_efficient</span></div></div>
+
+<h2 id="section-goldens">Goldens <span class="meta">(0/9 — 0%)</span></h2>
+<div class="eval-card" id="eval-scenario_1_adult_confused" data-passed="false"><div class="eval-header fail-bg"><span>scenario_1_adult_confused <span class="badge golden">golden</span></span><span class="badge fail">FAIL</span></div><div class="eval-body">
+<details class="run-detail" data-failed="true">
+<summary>Golden Evaluation — <span class="fail">FAIL</span> | 6 turns | 9.9s</summary>
+<div class="session-link">Session: <a href="https://ces.cloud.google.com/projects/ces-demo-emea/locations/us/apps/7dfa445b-21d4-4c61-b0f9-10e6bcfcb389?panel=conversation_list&id=evaluation-46011eef-64eb-41e9-bc46-d7298c26ab6b&source=EVAL" target="_blank"><code>evaluation-46011eef-64eb-41e9-bc46-d7298c26ab6b</code></a></div>
+<details class="tool-details"><summary class="tool-summary">&#9881; <b>Session Parameters</b></summary><pre class="tool-data">{
+  &quot;patient_first_name&quot;: &quot;&quot;,
+  &quot;no_input_counter&quot;: &quot;0&quot;,
+  &quot;_action_trigger&quot;: &quot;&quot;,
+  &quot;is_third_party_caller&quot;: &quot;&quot;,
+  &quot;caller_last_name&quot;: &quot;&quot;,
+  &quot;api_failed&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;&quot;,
+  &quot;patient_home_postcode&quot;: &quot;&quot;,
+  &quot;patient_age&quot;: &quot;&quot;,
+  &quot;caller_first_name&quot;: &quot;&quot;,
+  &quot;reason_for_call&quot;: &quot;&quot;
+}</pre></details>
+<details open><summary>Conversation &amp; Comparison</summary>
+<div class="turn-row match"><div class="turn-header">Turn 1 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> &lt;event&gt;welcome&lt;/event&gt;</div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Hello, thank you for calling healthcare support. To make sure I help you correctly, are you calling for yourself today, or on behalf of someone else?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Hello! Thank you for calling Healthcare Support. I'm here to help. Are you calling for yourself today, or on behalf of someone else?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 2 <span class="sem-score sem-2">2/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> Oh, hello. Yes, I'm just calling for myself.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;is_third_party_caller&quot;: &quot;false&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;is_third_party_caller&quot;: &quot;false&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Thank you. Could you please tell me your first and last name, your age, and your home postcode?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Right, thank you. I can help with that. To get started, could you please tell me your first and last name?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 3 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> My name is Sarah Jenkins. And my postcode is, um... oh dear, do you need the postcode or my age first? I always forget my glasses.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Sarah&quot;,
+  &quot;patient_last_name&quot;: &quot;Jenkins&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Sarah&quot;,
+  &quot;is_third_party_caller&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;Jenkins&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">That's completely fine, please take your time, there is no rush at all. We can just take it one step at a time. Let's start with your age, how old are</span><br><span class="comp-label">Actual:</span> <span class="comp-text">No problem at all, Ms. Jenkins. Take your time. We can start with your age, if that's easier?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 4 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> Thank you, dear. I am 62 years old.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_age&quot;: 62.0
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Sarah&quot;,
+  &quot;patient_age&quot;: 62.0,
+  &quot;is_third_party_caller&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;Jenkins&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Perfect, thank you. And whenever you are ready, what is your home postcode?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Got it, 62. And whenever you're ready, could you also give me your home postcode?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 5 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> It's SW1A 1AA.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_home_postcode&quot;: &quot;SW1A 1AA&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_age&quot;: 62.0,
+  &quot;patient_first_name&quot;: &quot;Sarah&quot;,
+  &quot;is_third_party_caller&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;Jenkins&quot;,
+  &quot;patient_home_postcode&quot;: &quot;SW1A 1AA&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Thank you for providing that, Sarah. Now, how can we help you today?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Perfect, thank you. Now, could you please tell me a little bit about why you are calling today?</span></div>
+</div>
+<div class="turn-row mismatch"><div class="turn-header">Turn 6 <span class="sem-score sem-2">2/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> I've had this terrible headache that just won't go away. It's been with me for about three days now and I'm getting quite worried.</div>
+<div class="comparison fail-bg"><span class="badge fail">FAIL</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_reason_for_call</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_reason_for_call</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;reason_for_call&quot;: {
+    &quot;$matchValue&quot;: &quot;Terrible headache for 3 days&quot;,
+    &quot;$originalValue&quot;: &quot;&quot;,
+    &quot;$matchType&quot;: &quot;semantic&quot;
+  }
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;reason_for_call&quot;: &quot;Headache for three days, getting worried.&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">I'm sorry to hear you've been dealing with that headache for a few days, I know that can be very uncomfortable. I have noted down all your details and</span><br><span class="comp-label">Actual:</span> <span class="comp-text">I am sorry to hear you're feeling unwell with a headache. I understand that can be worrying. I will now transfer you to our triage team who can assist</span></div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">transfer_call</span><br><span class="comp-label">Actual:</span> <span class="comp-text">transfer_call</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;transfer_destination&quot;: &quot;triage&quot;,
+  &quot;summary&quot;: {
+    &quot;$matchValue&quot;: &quot;&quot;,
+    &quot;$originalValue&quot;: &quot;&quot;,
+    &quot;$matchType&quot;: &quot;ignore&quot;
+  }
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;transfer_destination&quot;: &quot;triage&quot;,
+  &quot;summary&quot;: &quot;Patient: Sarah Jenkins, 62 years old. Reason: Headache for three days.&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">end_session</span><br><span class="comp-label">Actual:</span> <span class="comp-text">end_session</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;session_escalated&quot;: true
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;session_escalated&quot;: true
+}</pre></div></div></details></div>
+</div>
+</details>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must transfer the call to the triage team after capturing reason for call.<br><span class="meta">The agent successfully captured the reason for the call when the user stated, 'I've had this terrible headache that just won't go away. It's been with me for about three days now and I'm getting quite worried.' This was confirmed by the `set_reason_f</span></div>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must extract demographics step-by-step when caller is confused.<br><span class="meta">The user expressed confusion about which demographic information (postcode or age) to provide next. The agent responded by reassuring the user and then explicitly guided them to provide their age first, followed by the postcode in a subsequent turn. </span></div>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must show empathy and maintain a professional tone.<br><span class="meta">The agent consistently maintained a professional tone throughout the conversation, using polite language and addressing the user appropriately as 'Ms. Jenkins'. The agent also demonstrated empathy by saying 'No problem at all, Ms. Jenkins. Take your </span></div>
+</details>
+</div></div>
+<div class="eval-card" id="eval-scenario_1_adult_confused" data-passed="false"><div class="eval-header fail-bg"><span>scenario_1_adult_confused <span class="badge golden">golden</span></span><span class="badge fail">FAIL</span></div><div class="eval-body">
+<details class="run-detail" data-failed="true">
+<summary>Golden Evaluation — <span class="fail">FAIL</span> | 6 turns | 10.5s</summary>
+<div class="session-link">Session: <a href="https://ces.cloud.google.com/projects/ces-demo-emea/locations/us/apps/7dfa445b-21d4-4c61-b0f9-10e6bcfcb389?panel=conversation_list&id=evaluation-7d0e88ff-0f6a-4b79-8619-cf3a0d91b7c1&source=EVAL" target="_blank"><code>evaluation-7d0e88ff-0f6a-4b79-8619-cf3a0d91b7c1</code></a></div>
+<details class="tool-details"><summary class="tool-summary">&#9881; <b>Session Parameters</b></summary><pre class="tool-data">{
+  &quot;patient_first_name&quot;: &quot;&quot;,
+  &quot;no_input_counter&quot;: &quot;0&quot;,
+  &quot;_action_trigger&quot;: &quot;&quot;,
+  &quot;is_third_party_caller&quot;: &quot;&quot;,
+  &quot;caller_last_name&quot;: &quot;&quot;,
+  &quot;api_failed&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;&quot;,
+  &quot;patient_home_postcode&quot;: &quot;&quot;,
+  &quot;patient_age&quot;: &quot;&quot;,
+  &quot;caller_first_name&quot;: &quot;&quot;,
+  &quot;reason_for_call&quot;: &quot;&quot;
+}</pre></details>
+<details open><summary>Conversation &amp; Comparison</summary>
+<div class="turn-row match"><div class="turn-header">Turn 1 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> &lt;event&gt;welcome&lt;/event&gt;</div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Hello, thank you for calling healthcare support. To make sure I help you correctly, are you calling for yourself today, or on behalf of someone else?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Hello! Thank you for calling Healthcare Support. I'm here to help. Are you calling for yourself today, or on behalf of someone else?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 2 <span class="sem-score sem-2">2/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> Oh, hello. Yes, I'm just calling for myself.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;is_third_party_caller&quot;: &quot;false&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;is_third_party_caller&quot;: &quot;false&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Thank you. Could you please tell me your first and last name, your age, and your home postcode?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Right, thank you. I can help with that. To get started, could you please tell me your first and last name?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 3 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> My name is Sarah Jenkins. And my postcode is, um... oh dear, do you need the postcode or my age first? I always forget my glasses.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Sarah&quot;,
+  &quot;patient_last_name&quot;: &quot;Jenkins&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Sarah&quot;,
+  &quot;is_third_party_caller&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;Jenkins&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">That's completely fine, please take your time, there is no rush at all. We can just take it one step at a time. Let's start with your age, how old are</span><br><span class="comp-label">Actual:</span> <span class="comp-text">No problem at all, Ms. Jenkins. Take your time. We can start with your age, if that's easier?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 4 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> Thank you, dear. I am 62 years old.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_age&quot;: 62.0
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_age&quot;: 62.0,
+  &quot;patient_first_name&quot;: &quot;Sarah&quot;,
+  &quot;is_third_party_caller&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;Jenkins&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Perfect, thank you. And whenever you are ready, what is your home postcode?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Got it, 62. And whenever you're ready, could you also give me your home postcode?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 5 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> It's SW1A 1AA.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_home_postcode&quot;: &quot;SW1A 1AA&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Sarah&quot;,
+  &quot;patient_age&quot;: 62.0,
+  &quot;is_third_party_caller&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;Jenkins&quot;,
+  &quot;patient_home_postcode&quot;: &quot;SW1A 1AA&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Thank you for providing that, Sarah. Now, how can we help you today?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Perfect, thank you. Now, could you please tell me a little bit about why you are calling today?</span></div>
+</div>
+<div class="turn-row mismatch"><div class="turn-header">Turn 6 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> I've had this terrible headache that just won't go away. It's been with me for about three days now and I'm getting quite worried.</div>
+<div class="comparison fail-bg"><span class="badge fail">FAIL</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_reason_for_call</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_reason_for_call</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;reason_for_call&quot;: {
+    &quot;$matchValue&quot;: &quot;Terrible headache for 3 days&quot;,
+    &quot;$originalValue&quot;: &quot;&quot;,
+    &quot;$matchType&quot;: &quot;semantic&quot;
+  }
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;reason_for_call&quot;: &quot;Headache for three days, getting worried.&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">I'm sorry to hear you've been dealing with that headache for a few days, I know that can be very uncomfortable. I have noted down all your details and</span><br><span class="comp-label">Actual:</span> <span class="comp-text">I'm very sorry to hear that you're dealing with such a persistent headache, Ms. Jenkins. That sounds very uncomfortable. I've noted down that it's bee</span></div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">transfer_call</span><br><span class="comp-label">Actual:</span> <span class="comp-text">transfer_call</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;transfer_destination&quot;: &quot;triage&quot;,
+  &quot;summary&quot;: {
+    &quot;$matchValue&quot;: &quot;&quot;,
+    &quot;$originalValue&quot;: &quot;&quot;,
+    &quot;$matchType&quot;: &quot;ignore&quot;
+  }
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;transfer_destination&quot;: &quot;triage&quot;,
+  &quot;summary&quot;: &quot;Sarah Jenkins, age 62, postcode SW1A 1AA, calling for herself about a persistent headache for three days.&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">end_session</span><br><span class="comp-label">Actual:</span> <span class="comp-text">end_session</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;session_escalated&quot;: true
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;session_escalated&quot;: true
+}</pre></div></div></details></div>
+</div>
+</details>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must transfer the call to the triage team after capturing reason for call.<br><span class="meta">The agent successfully captured the reason for the call when the user stated, &quot;I've had this terrible headache that just won't go away. It's been with me for about three days now and I'm getting quite worried.&quot; This was confirmed by the `set_reason_f</span></div>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must extract demographics step-by-step when caller is confused.<br><span class="meta">The user expressed confusion about whether to provide their postcode or age first. The agent responded by acknowledging the confusion ('No problem at all, Ms. Jenkins. Take your time.') and then explicitly guided the user to provide one piece of info</span></div>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must show empathy and maintain a professional tone.<br><span class="meta">The agent consistently maintained a professional tone throughout the conversation, using polite language and addressing the user respectfully. Empathy was clearly demonstrated when the user expressed difficulty remembering details ('No problem at all</span></div>
+</details>
+</div></div>
+<div class="eval-card" id="eval-scenario_1_adult_confused" data-passed="false"><div class="eval-header fail-bg"><span>scenario_1_adult_confused <span class="badge golden">golden</span></span><span class="badge fail">FAIL</span></div><div class="eval-body">
+<details class="run-detail" data-failed="true">
+<summary>Golden Evaluation — <span class="fail">FAIL</span> | 6 turns | 9.1s</summary>
+<div class="session-link">Session: <a href="https://ces.cloud.google.com/projects/ces-demo-emea/locations/us/apps/7dfa445b-21d4-4c61-b0f9-10e6bcfcb389?panel=conversation_list&id=evaluation-68806623-2dd8-47fd-a6a9-e10d72173e31&source=EVAL" target="_blank"><code>evaluation-68806623-2dd8-47fd-a6a9-e10d72173e31</code></a></div>
+<details class="tool-details"><summary class="tool-summary">&#9881; <b>Session Parameters</b></summary><pre class="tool-data">{
+  &quot;patient_first_name&quot;: &quot;&quot;,
+  &quot;no_input_counter&quot;: &quot;0&quot;,
+  &quot;_action_trigger&quot;: &quot;&quot;,
+  &quot;is_third_party_caller&quot;: &quot;&quot;,
+  &quot;caller_last_name&quot;: &quot;&quot;,
+  &quot;api_failed&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;&quot;,
+  &quot;patient_home_postcode&quot;: &quot;&quot;,
+  &quot;patient_age&quot;: &quot;&quot;,
+  &quot;caller_first_name&quot;: &quot;&quot;,
+  &quot;reason_for_call&quot;: &quot;&quot;
+}</pre></details>
+<details open><summary>Conversation &amp; Comparison</summary>
+<div class="turn-row match"><div class="turn-header">Turn 1 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> &lt;event&gt;welcome&lt;/event&gt;</div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Hello, thank you for calling healthcare support. To make sure I help you correctly, are you calling for yourself today, or on behalf of someone else?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Hello! Thank you for calling Healthcare Support. To help me direct your call, are you calling for yourself today or on behalf of someone else?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 2 <span class="sem-score sem-2">2/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> Oh, hello. Yes, I'm just calling for myself.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;is_third_party_caller&quot;: &quot;false&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;is_third_party_caller&quot;: &quot;false&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Thank you. Could you please tell me your first and last name, your age, and your home postcode?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Right, I can help with that. May I have your first and last name, please?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 3 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> My name is Sarah Jenkins. And my postcode is, um... oh dear, do you need the postcode or my age first? I always forget my glasses.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Sarah&quot;,
+  &quot;patient_last_name&quot;: &quot;Jenkins&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Sarah&quot;,
+  &quot;is_third_party_caller&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;Jenkins&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">That's completely fine, please take your time, there is no rush at all. We can just take it one step at a time. Let's start with your age, how old are</span><br><span class="comp-label">Actual:</span> <span class="comp-text">No problem at all, take your time. We can do it in any order. Let's start with your age, if that's easier?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 4 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> Thank you, dear. I am 62 years old.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_age&quot;: 62.0
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_age&quot;: 62.0,
+  &quot;patient_first_name&quot;: &quot;Sarah&quot;,
+  &quot;is_third_party_caller&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;Jenkins&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Perfect, thank you. And whenever you are ready, what is your home postcode?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Got it, 62. And whenever you're ready, could you please tell me your home postcode?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 5 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> It's SW1A 1AA.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_home_postcode&quot;: &quot;SW1A 1AA&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Sarah&quot;,
+  &quot;patient_age&quot;: 62.0,
+  &quot;is_third_party_caller&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;Jenkins&quot;,
+  &quot;patient_home_postcode&quot;: &quot;SW1A 1AA&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Thank you for providing that, Sarah. Now, how can we help you today?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Thank you, I have all those details. Now, could you please tell me a little bit about why you're calling today?</span></div>
+</div>
+<div class="turn-row mismatch"><div class="turn-header">Turn 6 <span class="sem-score sem-2">2/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> I've had this terrible headache that just won't go away. It's been with me for about three days now and I'm getting quite worried.</div>
+<div class="comparison fail-bg"><span class="badge fail">FAIL</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_reason_for_call</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_reason_for_call</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;reason_for_call&quot;: {
+    &quot;$matchValue&quot;: &quot;Terrible headache for 3 days&quot;,
+    &quot;$originalValue&quot;: &quot;&quot;,
+    &quot;$matchType&quot;: &quot;semantic&quot;
+  }
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;reason_for_call&quot;: &quot;Headache for three days, getting worried.&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">I'm sorry to hear you've been dealing with that headache for a few days, I know that can be very uncomfortable. I have noted down all your details and</span><br><span class="comp-label">Actual:</span> <span class="comp-text">I'm sorry to hear you're dealing with such a persistent headache, that sounds very uncomfortable. Now, just to make sure I've got everything right: yo</span></div>
+<div class="comparison fail-bg"><span class="badge fail">FAIL</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">transfer_call</span><br><span class="comp-label">Actual:</span> <span class="comp-text">(missed)</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;transfer_destination&quot;: &quot;triage&quot;,
+  &quot;summary&quot;: {
+    &quot;$matchValue&quot;: &quot;&quot;,
+    &quot;$originalValue&quot;: &quot;&quot;,
+    &quot;$matchType&quot;: &quot;ignore&quot;
+  }
+}</pre></div></div></details></div>
+<div class="comparison fail-bg"><span class="badge fail">FAIL</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">end_session</span><br><span class="comp-label">Actual:</span> <span class="comp-text">(missed)</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;session_escalated&quot;: true
+}</pre></div></div></details></div>
+</div>
+</details>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must transfer the call to the triage team after capturing reason for call.<br><span class="meta">The agent successfully captured the reason for the call when the user stated, &quot;I've had this terrible headache that just won't go away. It's been with me for about three days now and I'm getting quite worried.&quot; This was confirmed by the `set_reason_f</span></div>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must extract demographics step-by-step when caller is confused.<br><span class="meta">The user expressed confusion about the order of providing demographic information ('do you need the postcode or my age first?'). The agent responded by acknowledging the confusion ('No problem at all, take your time. We can do it in any order.') and </span></div>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must show empathy and maintain a professional tone.<br><span class="meta">The agent consistently maintained a professional tone throughout the conversation, using polite language and clear communication. Furthermore, the agent demonstrated empathy by responding with understanding when the user forgot their glasses ('No pro</span></div>
+</details>
+</div></div>
+<div class="eval-card" id="eval-scenario_2_adult_efficient" data-passed="false"><div class="eval-header fail-bg"><span>scenario_2_adult_efficient <span class="badge golden">golden</span></span><span class="badge fail">FAIL</span></div><div class="eval-body">
+<details class="run-detail" data-failed="true">
+<summary>Golden Evaluation — <span class="fail">FAIL</span> | 4 turns | 6.8s</summary>
+<div class="session-link">Session: <a href="https://ces.cloud.google.com/projects/ces-demo-emea/locations/us/apps/7dfa445b-21d4-4c61-b0f9-10e6bcfcb389?panel=conversation_list&id=evaluation-93a77260-bbcf-4e38-b00b-95351fbf3590&source=EVAL" target="_blank"><code>evaluation-93a77260-bbcf-4e38-b00b-95351fbf3590</code></a></div>
+<details class="tool-details"><summary class="tool-summary">&#9881; <b>Session Parameters</b></summary><pre class="tool-data">{
+  &quot;patient_first_name&quot;: &quot;&quot;,
+  &quot;no_input_counter&quot;: &quot;0&quot;,
+  &quot;_action_trigger&quot;: &quot;&quot;,
+  &quot;is_third_party_caller&quot;: &quot;&quot;,
+  &quot;caller_last_name&quot;: &quot;&quot;,
+  &quot;api_failed&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;&quot;,
+  &quot;patient_home_postcode&quot;: &quot;&quot;,
+  &quot;patient_age&quot;: &quot;&quot;,
+  &quot;caller_first_name&quot;: &quot;&quot;,
+  &quot;reason_for_call&quot;: &quot;&quot;
+}</pre></details>
+<details open><summary>Conversation &amp; Comparison</summary>
+<div class="turn-row match"><div class="turn-header">Turn 1 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> &lt;event&gt;welcome&lt;/event&gt;</div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Hello, thank you for calling healthcare support. To make sure I help you correctly, are you calling for yourself today, or on behalf of someone else?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Hello, thank you for calling healthcare support. Are you calling for yourself today, or on behalf of someone else?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 2 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> Myself. Look, my name is Mark Davies, I'm 28, I just need to speak to someone.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Mark&quot;,
+  &quot;patient_age&quot;: 28.0,
+  &quot;is_third_party_caller&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;Davies&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_age&quot;: 28.0,
+  &quot;patient_first_name&quot;: &quot;Mark&quot;,
+  &quot;is_third_party_caller&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;Davies&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Understood, Mark. I just need your home postcode to complete your file, and then we will get you through.</span><br><span class="comp-label">Actual:</span> <span class="comp-text">I understand, Mark. I can help with that. To complete your details, could you please tell me your home postcode?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 3 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> M1 1AE.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_home_postcode&quot;: &quot;M1 1AE&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Mark&quot;,
+  &quot;patient_age&quot;: 28.0,
+  &quot;is_third_party_caller&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;Davies&quot;,
+  &quot;patient_home_postcode&quot;: &quot;M1 1AE&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Got it. Briefly, what is the reason for your call today?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Thank you. And could you please tell me the reason for your call today?</span></div>
+</div>
+<div class="turn-row mismatch"><div class="turn-header">Turn 4 <span class="sem-score sem-2">2/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> I messed up my knee playing rugby this morning. It's swelling up.</div>
+<div class="comparison fail-bg"><span class="badge fail">FAIL</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_reason_for_call</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_reason_for_call</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;reason_for_call&quot;: {
+    &quot;$matchValue&quot;: &quot;Knee injury from rugby with swelling&quot;,
+    &quot;$originalValue&quot;: &quot;&quot;,
+    &quot;$matchType&quot;: &quot;semantic&quot;
+  }
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;reason_for_call&quot;: &quot;Knee injury during rugby this morning, swelling up.&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Noted: knee injury from sports with swelling. I have all your details, Mark. Transferring you to the triage team now.</span><br><span class="comp-label">Actual:</span> <span class="comp-text">I'm sorry to hear about your knee. I have your details as Mark Davies, 28 years old, postcode M1 1AE, calling about a knee injury from rugby this morn</span></div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">transfer_call</span><br><span class="comp-label">Actual:</span> <span class="comp-text">transfer_call</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;transfer_destination&quot;: &quot;triage&quot;,
+  &quot;summary&quot;: {
+    &quot;$matchValue&quot;: &quot;&quot;,
+    &quot;$originalValue&quot;: &quot;&quot;,
+    &quot;$matchType&quot;: &quot;ignore&quot;
+  }
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;transfer_destination&quot;: &quot;triage&quot;,
+  &quot;summary&quot;: &quot;Mark Davies (28), M1 1AE, injured knee playing rugby this morning; swelling.&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">end_session</span><br><span class="comp-label">Actual:</span> <span class="comp-text">end_session</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;session_escalated&quot;: true
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;session_escalated&quot;: true
+}</pre></div></div></details></div>
+</div>
+</details>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must match the caller's efficient tone.<br><span class="meta">The user's tone is consistently efficient and direct, using short, factual statements (e.g., &quot;Myself. Look, my name is Mark Davies, I'm 28, I just need to speak to someone.&quot;, &quot;M1 1AE.&quot;, &quot;I messed up my knee playing rugby this morning. It's swelling u</span></div>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must transfer the call to the triage team after capturing reason for call.<br><span class="meta">The agent successfully captured the reason for the call when the user stated, &quot;I messed up my knee playing rugby this morning. It's swelling up.&quot; This was confirmed by the `set_reason_for_call` tool call. Immediately after capturing and summarizing t</span></div>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must support out-of-order entity extraction when multiple details are provided.<br><span class="meta">The user provided multiple pieces of information in a single utterance: 'Myself. Look, my name is Mark Davies, I'm 28, I just need to speak to someone.' The agent successfully extracted all relevant entities from this utterance, including 'is_third_p</span></div>
+</details>
+</div></div>
+<div class="eval-card" id="eval-scenario_2_adult_efficient" data-passed="false"><div class="eval-header fail-bg"><span>scenario_2_adult_efficient <span class="badge golden">golden</span></span><span class="badge fail">FAIL</span></div><div class="eval-body">
+<details class="run-detail" data-failed="true">
+<summary>Golden Evaluation — <span class="fail">FAIL</span> | 4 turns | 6.7s</summary>
+<div class="session-link">Session: <a href="https://ces.cloud.google.com/projects/ces-demo-emea/locations/us/apps/7dfa445b-21d4-4c61-b0f9-10e6bcfcb389?panel=conversation_list&id=evaluation-edfed760-546e-4f0f-973c-0da77bb2fa79&source=EVAL" target="_blank"><code>evaluation-edfed760-546e-4f0f-973c-0da77bb2fa79</code></a></div>
+<details class="tool-details"><summary class="tool-summary">&#9881; <b>Session Parameters</b></summary><pre class="tool-data">{
+  &quot;patient_first_name&quot;: &quot;&quot;,
+  &quot;no_input_counter&quot;: &quot;0&quot;,
+  &quot;_action_trigger&quot;: &quot;&quot;,
+  &quot;is_third_party_caller&quot;: &quot;&quot;,
+  &quot;caller_last_name&quot;: &quot;&quot;,
+  &quot;api_failed&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;&quot;,
+  &quot;patient_home_postcode&quot;: &quot;&quot;,
+  &quot;patient_age&quot;: &quot;&quot;,
+  &quot;caller_first_name&quot;: &quot;&quot;,
+  &quot;reason_for_call&quot;: &quot;&quot;
+}</pre></details>
+<details open><summary>Conversation &amp; Comparison</summary>
+<div class="turn-row match"><div class="turn-header">Turn 1 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> &lt;event&gt;welcome&lt;/event&gt;</div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Hello, thank you for calling healthcare support. To make sure I help you correctly, are you calling for yourself today, or on behalf of someone else?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Hello! Thank you for calling Healthcare Support. To help me direct your call, are you calling for yourself today or on behalf of someone else?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 2 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> Myself. Look, my name is Mark Davies, I'm 28, I just need to speak to someone.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Mark&quot;,
+  &quot;patient_age&quot;: 28.0,
+  &quot;is_third_party_caller&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;Davies&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Mark&quot;,
+  &quot;patient_age&quot;: 28.0,
+  &quot;is_third_party_caller&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;Davies&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Understood, Mark. I just need your home postcode to complete your file, and then we will get you through.</span><br><span class="comp-label">Actual:</span> <span class="comp-text">I understand, Mark. I can help with that. Before I connect you, could you also provide your home postcode, please?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 3 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> M1 1AE.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_home_postcode&quot;: &quot;M1 1AE&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Mark&quot;,
+  &quot;patient_age&quot;: 28.0,
+  &quot;is_third_party_caller&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;Davies&quot;,
+  &quot;patient_home_postcode&quot;: &quot;M1 1AE&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Got it. Briefly, what is the reason for your call today?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Thank you. Now, could you please tell me a bit about why you're calling today or what symptoms you're experiencing?</span></div>
+</div>
+<div class="turn-row mismatch"><div class="turn-header">Turn 4 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> I messed up my knee playing rugby this morning. It's swelling up.</div>
+<div class="comparison fail-bg"><span class="badge fail">FAIL</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_reason_for_call</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_reason_for_call</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;reason_for_call&quot;: {
+    &quot;$matchValue&quot;: &quot;Knee injury from rugby with swelling&quot;,
+    &quot;$originalValue&quot;: &quot;&quot;,
+    &quot;$matchType&quot;: &quot;semantic&quot;
+  }
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;reason_for_call&quot;: &quot;Messed up knee playing rugby this morning. It's swelling up.&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Noted: knee injury from sports with swelling. I have all your details, Mark. Transferring you to the triage team now.</span><br><span class="comp-label">Actual:</span> <span class="comp-text">I'm sorry to hear about your knee, Mark, that sounds painful. I have your details as Mark Davies, age 28, with postcode M1 1AE, calling about a knee i</span></div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">transfer_call</span><br><span class="comp-label">Actual:</span> <span class="comp-text">transfer_call</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;transfer_destination&quot;: &quot;triage&quot;,
+  &quot;summary&quot;: {
+    &quot;$matchValue&quot;: &quot;&quot;,
+    &quot;$originalValue&quot;: &quot;&quot;,
+    &quot;$matchType&quot;: &quot;ignore&quot;
+  }
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;transfer_destination&quot;: &quot;triage&quot;,
+  &quot;summary&quot;: &quot;Patient: Mark Davies, 28. Postcode: M1 1AE. Reason: Injured knee playing rugby this morning, swelling up.&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">end_session</span><br><span class="comp-label">Actual:</span> <span class="comp-text">end_session</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;session_escalated&quot;: true
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;session_escalated&quot;: true
+}</pre></div></div></details></div>
+</div>
+</details>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must match the caller's efficient tone.<br><span class="meta">The user's tone is efficient and direct throughout the conversation (e.g., 'Myself. Look, my name is Mark Davies, I'm 28, I just need to speak to someone.', 'M1 1AE.', 'I messed up my knee playing rugby this morning. It's swelling up.'). The agent, h</span></div>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must transfer the call to the triage team after capturing reason for call.<br><span class="meta">The agent successfully captured the reason for the call when the user stated, &quot;I messed up my knee playing rugby this morning. It's swelling up.&quot; This was confirmed by the `set_reason_for_call` tool call. Immediately after this, the agent stated, &quot;I'</span></div>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must support out-of-order entity extraction when multiple details are provided.<br><span class="meta">The user provided multiple pieces of information in a single utterance: 'Myself. Look, my name is Mark Davies, I'm 28, I just need to speak to someone.' The agent successfully extracted all relevant entities from this single, somewhat unstructured in</span></div>
+</details>
+</div></div>
+<div class="eval-card" id="eval-scenario_2_adult_efficient" data-passed="false"><div class="eval-header fail-bg"><span>scenario_2_adult_efficient <span class="badge golden">golden</span></span><span class="badge fail">FAIL</span></div><div class="eval-body">
+<details class="run-detail" data-failed="true">
+<summary>Golden Evaluation — <span class="fail">FAIL</span> | 4 turns | 7.6s</summary>
+<div class="session-link">Session: <a href="https://ces.cloud.google.com/projects/ces-demo-emea/locations/us/apps/7dfa445b-21d4-4c61-b0f9-10e6bcfcb389?panel=conversation_list&id=evaluation-344b95c0-47d4-42bc-81a0-d20df58ca791&source=EVAL" target="_blank"><code>evaluation-344b95c0-47d4-42bc-81a0-d20df58ca791</code></a></div>
+<details class="tool-details"><summary class="tool-summary">&#9881; <b>Session Parameters</b></summary><pre class="tool-data">{
+  &quot;patient_first_name&quot;: &quot;&quot;,
+  &quot;no_input_counter&quot;: &quot;0&quot;,
+  &quot;_action_trigger&quot;: &quot;&quot;,
+  &quot;is_third_party_caller&quot;: &quot;&quot;,
+  &quot;caller_last_name&quot;: &quot;&quot;,
+  &quot;api_failed&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;&quot;,
+  &quot;patient_home_postcode&quot;: &quot;&quot;,
+  &quot;patient_age&quot;: &quot;&quot;,
+  &quot;caller_first_name&quot;: &quot;&quot;,
+  &quot;reason_for_call&quot;: &quot;&quot;
+}</pre></details>
+<details open><summary>Conversation &amp; Comparison</summary>
+<div class="turn-row match"><div class="turn-header">Turn 1 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> &lt;event&gt;welcome&lt;/event&gt;</div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Hello, thank you for calling healthcare support. To make sure I help you correctly, are you calling for yourself today, or on behalf of someone else?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Hello, thank you for calling healthcare support. Are you calling for yourself today, or on behalf of someone else?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 2 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> Myself. Look, my name is Mark Davies, I'm 28, I just need to speak to someone.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Mark&quot;,
+  &quot;patient_age&quot;: 28.0,
+  &quot;is_third_party_caller&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;Davies&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Mark&quot;,
+  &quot;patient_age&quot;: 28.0,
+  &quot;is_third_party_caller&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;Davies&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Understood, Mark. I just need your home postcode to complete your file, and then we will get you through.</span><br><span class="comp-label">Actual:</span> <span class="comp-text">I understand, Mark. I can help with that. To make sure I connect you with the right person, could you please tell me your home postcode?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 3 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> M1 1AE.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_home_postcode&quot;: &quot;M1 1AE&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_age&quot;: 28.0,
+  &quot;patient_first_name&quot;: &quot;Mark&quot;,
+  &quot;is_third_party_caller&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;Davies&quot;,
+  &quot;patient_home_postcode&quot;: &quot;M1 1AE&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Got it. Briefly, what is the reason for your call today?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Thank you. Now, can you please tell me a bit about why you're calling today?</span></div>
+</div>
+<div class="turn-row mismatch"><div class="turn-header">Turn 4 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> I messed up my knee playing rugby this morning. It's swelling up.</div>
+<div class="comparison fail-bg"><span class="badge fail">FAIL</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_reason_for_call</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_reason_for_call</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;reason_for_call&quot;: {
+    &quot;$matchValue&quot;: &quot;Knee injury from rugby with swelling&quot;,
+    &quot;$originalValue&quot;: &quot;&quot;,
+    &quot;$matchType&quot;: &quot;semantic&quot;
+  }
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;reason_for_call&quot;: &quot;Knee injury during rugby this morning, swelling up.&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Noted: knee injury from sports with swelling. I have all your details, Mark. Transferring you to the triage team now.</span><br><span class="comp-label">Actual:</span> <span class="comp-text">I'm sorry to hear about your knee, that sounds painful. To recap, you are Mark Davies, twenty-eight years old, and you're calling because you injured </span></div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">transfer_call</span><br><span class="comp-label">Actual:</span> <span class="comp-text">transfer_call</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;transfer_destination&quot;: &quot;triage&quot;,
+  &quot;summary&quot;: {
+    &quot;$matchValue&quot;: &quot;&quot;,
+    &quot;$originalValue&quot;: &quot;&quot;,
+    &quot;$matchType&quot;: &quot;ignore&quot;
+  }
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;transfer_destination&quot;: &quot;triage&quot;,
+  &quot;summary&quot;: &quot;Patient: Mark Davies, 28 years old, postcode M1 1AE. Calling for himself about a knee injury from rugby this morning, with swelling.&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">end_session</span><br><span class="comp-label">Actual:</span> <span class="comp-text">end_session</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;session_escalated&quot;: true
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;session_escalated&quot;: true
+}</pre></div></div></details></div>
+</div>
+</details>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must match the caller's efficient tone.<br><span class="meta">The user's tone is efficient and direct, as seen in utterances like 'Myself. Look, my name is Mark Davies, I'm 28, I just need to speak to someone.' and 'M1 1AE.' The agent, however, maintains a polite and somewhat verbose tone throughout the convers</span></div>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must transfer the call to the triage team after capturing reason for call.<br><span class="meta">The agent successfully captured the reason for the call when the user stated, 'I messed up my knee playing rugby this morning. It's swelling up.' This was confirmed by the `set_reason_for_call` tool call. Immediately after this, the agent explicitly </span></div>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must support out-of-order entity extraction when multiple details are provided.<br><span class="meta">The user provided multiple pieces of information in a single utterance: 'Myself. Look, my name is Mark Davies, I'm 28, I just need to speak to someone.' The agent successfully extracted 'is_third_party_caller: false', 'patient_first_name: Mark', 'pat</span></div>
+</details>
+</div></div>
+<div class="eval-card" id="eval-scenario_3_child_escalation" data-passed="false"><div class="eval-header fail-bg"><span>scenario_3_child_escalation <span class="badge golden">golden</span></span><span class="badge fail">FAIL</span></div><div class="eval-body">
+<details class="run-detail" data-failed="true">
+<summary>Golden Evaluation — <span class="fail">FAIL</span> | 4 turns | 6.6s</summary>
+<div class="session-link">Session: <a href="https://ces.cloud.google.com/projects/ces-demo-emea/locations/us/apps/7dfa445b-21d4-4c61-b0f9-10e6bcfcb389?panel=conversation_list&id=evaluation-e9dd824c-b1a0-460a-859b-6d7b77aa75bd&source=EVAL" target="_blank"><code>evaluation-e9dd824c-b1a0-460a-859b-6d7b77aa75bd</code></a></div>
+<details class="tool-details"><summary class="tool-summary">&#9881; <b>Session Parameters</b></summary><pre class="tool-data">{
+  &quot;patient_first_name&quot;: &quot;&quot;,
+  &quot;no_input_counter&quot;: &quot;0&quot;,
+  &quot;_action_trigger&quot;: &quot;&quot;,
+  &quot;is_third_party_caller&quot;: &quot;&quot;,
+  &quot;caller_last_name&quot;: &quot;&quot;,
+  &quot;api_failed&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;&quot;,
+  &quot;patient_home_postcode&quot;: &quot;&quot;,
+  &quot;patient_age&quot;: &quot;&quot;,
+  &quot;caller_first_name&quot;: &quot;&quot;,
+  &quot;reason_for_call&quot;: &quot;&quot;
+}</pre></details>
+<details open><summary>Conversation &amp; Comparison</summary>
+<div class="turn-row match"><div class="turn-header">Turn 1 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> &lt;event&gt;welcome&lt;/event&gt;</div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Hello, thank you for calling healthcare support. To make sure I help you correctly, are you calling for yourself today, or on behalf of someone else?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Hello, thank you for calling healthcare support. Are you calling for yourself today, or on behalf of someone else?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 2 <span class="sem-score sem-2">2/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> I'm calling for my son, he's feeling really unwell.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;is_third_party_caller&quot;: &quot;true&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;is_third_party_caller&quot;: &quot;true&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">I can certainly help get you to the right place. First, could I please have your first and last name?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">I am sorry to hear that. I can help. Since you are calling for someone else, may I please have your first and last name? Also, could you please tell m</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 3 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> It's David Smith.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;caller_first_name&quot;: &quot;David&quot;,
+  &quot;caller_last_name&quot;: &quot;Smith&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;caller_first_name&quot;: &quot;David&quot;,
+  &quot;is_third_party_caller&quot;: &quot;true&quot;,
+  &quot;caller_last_name&quot;: &quot;Smith&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Thank you, David. And what is your son's first and last name, his age, and his home postcode?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Thank you, Mr. Smith. And what is your son's first and last name, age, and home postcode?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 4 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> His name is Leo Smith, he is 10 years old. Postcode is B1 2QA.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Leo&quot;,
+  &quot;patient_age&quot;: 10.0,
+  &quot;patient_last_name&quot;: &quot;Smith&quot;,
+  &quot;patient_home_postcode&quot;: &quot;B1 2QA&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_age&quot;: 10.0,
+  &quot;caller_first_name&quot;: &quot;David&quot;,
+  &quot;patient_first_name&quot;: &quot;Leo&quot;,
+  &quot;is_third_party_caller&quot;: &quot;true&quot;,
+  &quot;caller_last_name&quot;: &quot;Smith&quot;,
+  &quot;patient_last_name&quot;: &quot;Smith&quot;,
+  &quot;patient_home_postcode&quot;: &quot;B1 2QA&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">transfer_call</span><br><span class="comp-label">Actual:</span> <span class="comp-text">transfer_call</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;transfer_destination&quot;: &quot;specialist&quot;,
+  &quot;summary&quot;: {
+    &quot;$matchValue&quot;: &quot;&quot;,
+    &quot;$originalValue&quot;: &quot;&quot;,
+    &quot;$matchType&quot;: &quot;ignore&quot;
+  }
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;transfer_destination&quot;: &quot;specialist&quot;,
+  &quot;summary&quot;: &quot;Child patient under 13&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Thank you. Since you are calling about a child under 13, I am going to transfer you to a human specialist who can assist you immediately. Please hold </span><br><span class="comp-label">Actual:</span> <span class="comp-text">Thank you. Since you are calling about a child under 13, I am going to transfer you to a human specialist who can assist you immediately. Please hold </span></div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">end_session</span><br><span class="comp-label">Actual:</span> <span class="comp-text">end_session</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;session_escalated&quot;: true
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;session_escalated&quot;: true
+}</pre></div></div></details></div>
+</div>
+</details>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must capture both caller and patient demographics for third-party callers.<br><span class="meta">The agent successfully identified the user as a third-party caller. The agent then explicitly requested and subsequently captured both the caller's first and last name ('David Smith') and the patient's first name, last name, age, and home postcode ('</span></div>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must trigger immediate escalation when patient age is under 13.<br><span class="meta">The custom expectation is met. The user explicitly states the patient's age as 10 years old. Immediately after this information is processed by the `set_demographics` tool, the agent triggers a `transfer_call` to a 'specialist' with the summary 'Chil</span></div>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must gracefully end the automated portion of the call.<br><span class="meta">The agent gracefully ended the automated portion of the call by clearly stating the reason for the transfer ('Since you are calling about a child under 13, I am going to transfer you to a human specialist who can assist you immediately.') and providi</span></div>
+</details>
+</div></div>
+<div class="eval-card" id="eval-scenario_3_child_escalation" data-passed="false"><div class="eval-header fail-bg"><span>scenario_3_child_escalation <span class="badge golden">golden</span></span><span class="badge fail">FAIL</span></div><div class="eval-body">
+<details class="run-detail" data-failed="true">
+<summary>Golden Evaluation — <span class="fail">FAIL</span> | 4 turns | 6.8s</summary>
+<div class="session-link">Session: <a href="https://ces.cloud.google.com/projects/ces-demo-emea/locations/us/apps/7dfa445b-21d4-4c61-b0f9-10e6bcfcb389?panel=conversation_list&id=evaluation-7597ad37-1c9c-42fb-ae63-01447b12f964&source=EVAL" target="_blank"><code>evaluation-7597ad37-1c9c-42fb-ae63-01447b12f964</code></a></div>
+<details class="tool-details"><summary class="tool-summary">&#9881; <b>Session Parameters</b></summary><pre class="tool-data">{
+  &quot;patient_first_name&quot;: &quot;&quot;,
+  &quot;no_input_counter&quot;: &quot;0&quot;,
+  &quot;_action_trigger&quot;: &quot;&quot;,
+  &quot;is_third_party_caller&quot;: &quot;&quot;,
+  &quot;caller_last_name&quot;: &quot;&quot;,
+  &quot;api_failed&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;&quot;,
+  &quot;patient_home_postcode&quot;: &quot;&quot;,
+  &quot;patient_age&quot;: &quot;&quot;,
+  &quot;caller_first_name&quot;: &quot;&quot;,
+  &quot;reason_for_call&quot;: &quot;&quot;
+}</pre></details>
+<details open><summary>Conversation &amp; Comparison</summary>
+<div class="turn-row match"><div class="turn-header">Turn 1 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> &lt;event&gt;welcome&lt;/event&gt;</div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Hello, thank you for calling healthcare support. To make sure I help you correctly, are you calling for yourself today, or on behalf of someone else?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Hello! Thank you for calling Healthcare Support. I'm here to help. Are you calling for yourself today, or on behalf of someone else?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 2 <span class="sem-score sem-2">2/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> I'm calling for my son, he's feeling really unwell.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;is_third_party_caller&quot;: &quot;true&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;is_third_party_caller&quot;: &quot;true&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">I can certainly help get you to the right place. First, could I please have your first and last name?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">I'm sorry to hear that. I can certainly help. Since you're calling for someone else, may I have your first and last name, please? Also, could you tell</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 3 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> It's David Smith.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;caller_first_name&quot;: &quot;David&quot;,
+  &quot;caller_last_name&quot;: &quot;Smith&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;caller_first_name&quot;: &quot;David&quot;,
+  &quot;is_third_party_caller&quot;: &quot;true&quot;,
+  &quot;caller_last_name&quot;: &quot;Smith&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Thank you, David. And what is your son's first and last name, his age, and his home postcode?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Thank you, David. And what is your son's first and last name, his age, and his home postcode?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 4 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> His name is Leo Smith, he is 10 years old. Postcode is B1 2QA.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Leo&quot;,
+  &quot;patient_age&quot;: 10.0,
+  &quot;patient_last_name&quot;: &quot;Smith&quot;,
+  &quot;patient_home_postcode&quot;: &quot;B1 2QA&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_age&quot;: 10.0,
+  &quot;caller_first_name&quot;: &quot;David&quot;,
+  &quot;patient_first_name&quot;: &quot;Leo&quot;,
+  &quot;is_third_party_caller&quot;: &quot;true&quot;,
+  &quot;caller_last_name&quot;: &quot;Smith&quot;,
+  &quot;patient_last_name&quot;: &quot;Smith&quot;,
+  &quot;patient_home_postcode&quot;: &quot;B1 2QA&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">transfer_call</span><br><span class="comp-label">Actual:</span> <span class="comp-text">transfer_call</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;transfer_destination&quot;: &quot;specialist&quot;,
+  &quot;summary&quot;: {
+    &quot;$matchValue&quot;: &quot;&quot;,
+    &quot;$originalValue&quot;: &quot;&quot;,
+    &quot;$matchType&quot;: &quot;ignore&quot;
+  }
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;transfer_destination&quot;: &quot;specialist&quot;,
+  &quot;summary&quot;: &quot;Child patient under 13&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Thank you. Since you are calling about a child under 13, I am going to transfer you to a human specialist who can assist you immediately. Please hold </span><br><span class="comp-label">Actual:</span> <span class="comp-text">Thank you. Since you are calling about a child under 13, I am going to transfer you to a human specialist who can assist you immediately. Please hold </span></div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">end_session</span><br><span class="comp-label">Actual:</span> <span class="comp-text">end_session</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;session_escalated&quot;: true
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;session_escalated&quot;: true
+}</pre></div></div></details></div>
+</div>
+</details>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must capture both caller and patient demographics for third-party callers.<br><span class="meta">The agent successfully identified that the user was a third-party caller. Subsequently, the agent explicitly asked for and captured both the caller's demographics (first and last name) and the patient's demographics (first name, last name, age, and h</span></div>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must trigger immediate escalation when patient age is under 13.<br><span class="meta">The custom expectation states that the agent must trigger immediate escalation when the patient's age is under 13. In the conversation, the user states, 'His name is Leo Smith, he is 10 years old.' Immediately after capturing this information via the</span></div>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must gracefully end the automated portion of the call.<br><span class="meta">The agent gracefully ended the automated portion of the call by clearly stating the reason for the transfer ('Since you are calling about a child under 13, I am going to transfer you to a human specialist who can assist you immediately.') and instruc</span></div>
+</details>
+</div></div>
+<div class="eval-card" id="eval-scenario_3_child_escalation" data-passed="false"><div class="eval-header fail-bg"><span>scenario_3_child_escalation <span class="badge golden">golden</span></span><span class="badge fail">FAIL</span></div><div class="eval-body">
+<details class="run-detail" data-failed="true">
+<summary>Golden Evaluation — <span class="fail">FAIL</span> | 4 turns | 4.9s</summary>
+<div class="session-link">Session: <a href="https://ces.cloud.google.com/projects/ces-demo-emea/locations/us/apps/7dfa445b-21d4-4c61-b0f9-10e6bcfcb389?panel=conversation_list&id=evaluation-e512be85-ad50-498c-963e-d6d587beae89&source=EVAL" target="_blank"><code>evaluation-e512be85-ad50-498c-963e-d6d587beae89</code></a></div>
+<details class="tool-details"><summary class="tool-summary">&#9881; <b>Session Parameters</b></summary><pre class="tool-data">{
+  &quot;patient_first_name&quot;: &quot;&quot;,
+  &quot;no_input_counter&quot;: &quot;0&quot;,
+  &quot;_action_trigger&quot;: &quot;&quot;,
+  &quot;is_third_party_caller&quot;: &quot;&quot;,
+  &quot;caller_last_name&quot;: &quot;&quot;,
+  &quot;api_failed&quot;: &quot;false&quot;,
+  &quot;patient_last_name&quot;: &quot;&quot;,
+  &quot;patient_home_postcode&quot;: &quot;&quot;,
+  &quot;patient_age&quot;: &quot;&quot;,
+  &quot;caller_first_name&quot;: &quot;&quot;,
+  &quot;reason_for_call&quot;: &quot;&quot;
+}</pre></details>
+<details open><summary>Conversation &amp; Comparison</summary>
+<div class="turn-row match"><div class="turn-header">Turn 1 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> &lt;event&gt;welcome&lt;/event&gt;</div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Hello, thank you for calling healthcare support. To make sure I help you correctly, are you calling for yourself today, or on behalf of someone else?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">Hello! Thank you for calling Healthcare Support. To help me direct your call, are you calling for yourself today or on behalf of someone else?</span></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 2 <span class="sem-score sem-2">2/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> I'm calling for my son, he's feeling really unwell.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;is_third_party_caller&quot;: &quot;true&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;is_third_party_caller&quot;: &quot;true&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">I can certainly help get you to the right place. First, could I please have your first and last name?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">I see. I'm sorry to hear he's unwell. In order to get him the right help, could you please tell me his age, first and last name, and his home postcode</span></div>
+</div>
+<div class="turn-row mismatch"><div class="turn-header">Turn 3 <span class="sem-score sem-1">1/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> It's David Smith.</div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Thank you, David. And what is your son's first and last name, his age, and his home postcode?</span><br><span class="comp-label">Actual:</span> <span class="comp-text">To be sure, is David Smith your name or your son's name?</span></div>
+<div class="comparison fail-bg"><span class="badge fail">FAIL</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">(missed)</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;caller_first_name&quot;: &quot;David&quot;,
+  &quot;caller_last_name&quot;: &quot;Smith&quot;
+}</pre></div></div></details></div>
+</div>
+<div class="turn-row match"><div class="turn-header">Turn 4 <span class="sem-score sem-4">4/4</span></div>
+<div style="color:#2980b9;margin:4px 0;padding:4px 8px;background:#eef5ff;border-radius:4px;"><b>User:</b> His name is Leo Smith, he is 10 years old. Postcode is B1 2QA.</div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">set_demographics</span><br><span class="comp-label">Actual:</span> <span class="comp-text">set_demographics</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Leo&quot;,
+  &quot;patient_age&quot;: 10.0,
+  &quot;patient_last_name&quot;: &quot;Smith&quot;,
+  &quot;patient_home_postcode&quot;: &quot;B1 2QA&quot;
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;patient_first_name&quot;: &quot;Leo&quot;,
+  &quot;patient_age&quot;: 10.0,
+  &quot;is_third_party_caller&quot;: &quot;true&quot;,
+  &quot;patient_last_name&quot;: &quot;Smith&quot;,
+  &quot;patient_home_postcode&quot;: &quot;B1 2QA&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">transfer_call</span><br><span class="comp-label">Actual:</span> <span class="comp-text">transfer_call</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;transfer_destination&quot;: &quot;specialist&quot;,
+  &quot;summary&quot;: {
+    &quot;$matchValue&quot;: &quot;&quot;,
+    &quot;$originalValue&quot;: &quot;&quot;,
+    &quot;$matchType&quot;: &quot;ignore&quot;
+  }
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;transfer_destination&quot;: &quot;specialist&quot;,
+  &quot;summary&quot;: &quot;Child patient under 13&quot;
+}</pre></div></div></details></div>
+<div class="comparison pass-bg"><span class="badge pass">UNSPECIFIED</span> &#128172; <b>text</b><br><span class="comp-label">Expected:</span> <span class="comp-text">Thank you. Since you are calling about a child under 13, I am going to transfer you to a human specialist who can assist you immediately. Please hold </span><br><span class="comp-label">Actual:</span> <span class="comp-text">Thank you. Since you are calling about a child under 13, I am going to transfer you to a human specialist who can assist you immediately. Please hold </span></div>
+<div class="comparison pass-bg"><span class="badge pass">PASS</span> &#128295; <b>tool_call</b><br><span class="comp-label">Expected:</span> <span class="comp-text">end_session</span><br><span class="comp-label">Actual:</span> <span class="comp-text">end_session</span><details style="margin-top:4px;"><summary style="cursor:pointer;font-size:0.85em;color:#666;">Tool call args</summary><div style="font-size:0.82em;background:#f8f9fa;padding:6px 10px;border-radius:4px;margin-top:4px;"><div><span class="comp-label">Expected args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;session_escalated&quot;: true
+}</pre></div><div><span class="comp-label">Actual args:</span><pre style="margin:2px 0;white-space:pre-wrap;">{
+  &quot;session_escalated&quot;: true
+}</pre></div></div></details></div>
+</div>
+</details>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must capture both caller and patient demographics for third-party callers.<br><span class="meta">The agent successfully identified that it was a third-party caller and captured the patient's demographics (name, age, postcode). However, despite the user providing their name ('David Smith') and the agent asking for it, the caller's demographics we</span></div>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must trigger immediate escalation when patient age is under 13.<br><span class="meta">The user explicitly states the patient's age is 10, which is under 13. Immediately after capturing this demographic information, the agent triggers an escalation by calling the `transfer_call` tool with `transfer_destination: &quot;specialist&quot;` and `summa</span></div>
+<div class="expectation"><span class="badge not-met">Not Met</span> The agent must gracefully end the automated portion of the call.<br><span class="meta">The agent gracefully ended the automated portion of the call by informing the user that they would be transferred to a human specialist due to the nature of the call (child under 13) and asked them to hold the line. This provides a clear and polite t</span></div>
+</details>
+</div></div>
+<h2 id="section-tools">Tool Tests <span class="meta">(5/5 — 100%)</span></h2>
+<table><tr><th>Result</th><th>Tool</th><th>Test</th><th>Latency</th><th>Errors</th></tr>
+<tr data-passed="true"><td class="pass"><b>PASSED</b></td><td>set_session_state</td><td>set_session_state_success</td><td>2241ms</td><td></td></tr>
+<tr data-passed="true"><td class="pass"><b>PASSED</b></td><td>transfer_call</td><td>transfer_call_triage</td><td>1157ms</td><td></td></tr>
+<tr data-passed="true"><td class="pass"><b>PASSED</b></td><td>set_reason_for_call</td><td>set_reason_for_call_success</td><td>1044ms</td><td></td></tr>
+<tr data-passed="true"><td class="pass"><b>PASSED</b></td><td>set_demographics</td><td>set_demographics_self</td><td>1086ms</td><td></td></tr>
+<tr data-passed="true"><td class="pass"><b>PASSED</b></td><td>set_demographics</td><td>set_demographics_third_party</td><td>1144ms</td><td></td></tr>
+</table>
+</body></html>
