@@ -5,7 +5,7 @@
 ## Agent Design
 
 ### Architecture
-- **Single Agent:** `healthcare_support_triage_agent`. Acts as the first line of telephony support concierge.
+- **Single Agent:** `healthcare_support_triage_agent` (Persona: Clara). Acts as the first line of telephony support concierge.
 - **Scope:** Greeting, context establishment (self vs third party), dynamic demographic capture (supports out-of-order entity extraction), age-based escalation routing (`patient_age < 13`), reason for call capture (with strict medical guardrails), and handoff summary.
 
 ### Tools
@@ -99,4 +99,5 @@
 
 | Date | Change | Author |
 |------|--------|--------|
+| 2026-05-14 | Introduced agent persona name Clara | Antigravity |
 | 2026-05-14 | Initial baseline completed | Antigravity |
