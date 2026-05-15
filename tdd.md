@@ -99,5 +99,6 @@
 
 | Date | Change | Author |
 |------|--------|--------|
+| 2026-05-15 | Updated General Settings for multilingual support (en-GB default, fr-FR, es-ES, hi-IN) with Zephyr voices | Antigravity |
 | 2026-05-14 | Introduced agent persona name Clara | Antigravity |
 | 2026-05-14 | Initial baseline completed | Antigravity |
