@@ -13,14 +13,32 @@
         "model": "gemini-3.1-flash-live"
     },
     "languageSettings": {
-        "defaultLanguageCode": "en-US"
+        "defaultLanguageCode": "en-GB",
+        "supportedLanguageCodes": [
+            "fr-FR",
+            "es-ES",
+            "hi-IN"
+        ]
     },
     "timeZoneSettings": {
         "timeZone": "America/New_York"
     },
     "audioProcessingConfig": {
         "synthesizeSpeechConfigs": {
-            "en-US": {
+            "en-GB": {
+                "voice": "en-GB-Chirp3-HD-Zephyr",
+                "speakingRate": 1.0
+            },
+            "fr-FR": {
+                "voice": "fr-FR-Chirp3-HD-Zephyr",
+                "speakingRate": 1.0
+            },
+            "es-ES": {
+                "voice": "es-ES-Chirp3-HD-Zephyr",
+                "speakingRate": 1.0
+            },
+            "hi-IN": {
+                "voice": "hi-IN-Chirp3-HD-Zephyr",
                 "speakingRate": 1.0
             }
         }
